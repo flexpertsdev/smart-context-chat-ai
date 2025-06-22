@@ -16,9 +16,11 @@ class NavigationManager {
   private readonly routeHierarchy: Record<string, string> = {
     // Chat routes
     '/chat': '/',
+    '/chat/:chatId': '/',  // Individual chat pages should go back to home
     // Context routes  
     '/contexts/new': '/contexts',
     '/contexts/select': '/contexts',
+    '/contexts/:contextId': '/contexts',  // Individual context pages go back to library
     // Settings routes
     '/settings/tags': '/settings',
     // Default fallbacks
@@ -116,16 +118,18 @@ class NavigationManager {
       return this.routeHierarchy[currentPath]
     }
 
-    // Pattern match for dynamic routes
-    for (const [pattern, parent] of Object.entries(this.routeHierarchy)) {
-      if (pattern.includes(':') || pattern.includes('*')) {
-        const regexPattern = pattern
-          .replace(/:[^/]+/g, '[^/]+')  // Replace :param with regex
-          .replace(/\*/g, '.*')          // Replace * with regex
-        
-        if (new RegExp(`^${regexPattern}$`).test(currentPath)) {
-          return parent
-        }
+    // Pattern match for dynamic routes - check patterns in order of specificity
+    const sortedPatterns = Object.entries(this.routeHierarchy)
+      .filter(([pattern]) => pattern.includes(':') || pattern.includes('*'))
+      .sort((a, b) => b[0].split('/').length - a[0].split('/').length); // More specific patterns first
+
+    for (const [pattern, parent] of sortedPatterns) {
+      const regexPattern = pattern
+        .replace(/:[^/]+/g, '[^/]+')  // Replace :param with regex
+        .replace(/\*/g, '.*')          // Replace * with regex
+      
+      if (new RegExp(`^${regexPattern}$`).test(currentPath)) {
+        return parent
       }
     }
 
