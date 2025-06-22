@@ -1,0 +1,24 @@
+/* Generated Design System Variables */
+:root {
+  /* Dynamic Viewport Height */
+  --vh: 1vh;
+  
+  /* Colors */
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 217 91% 60%;
+  --secondary-foreground: 210 40% 98%;
+  
+  /* Spacing (4px base) */
+  --space-unit: 1rem;
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 0.75rem;
+  --space-base: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  
+  /* Component Tokens */
+  --radius: 0.5rem;
+  --touch-target: 44px;
+}

@@ -1,0 +1,21 @@
+/* Mobile-first app container styles */
+.app-container {
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Touch target utility for mobile accessibility */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Remove default styling that interferes with mobile layout */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}

@@ -1,0 +1,32 @@
+{
+  "name": "design-system-analyzer",
+  "version": "1.0.0",
+  "description": "Portable design system analyzer and rebuilder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "analyze": "tsx analyzer.ts analyze",
+    "rebuild": "tsx analyzer.ts rebuild",
+    "rebuild:auto": "tsx analyzer.ts rebuild --auto",
+    "rebuild:preview": "tsx analyzer.ts rebuild --preview",
+    "setup": "npm install",
+    "test": "tsx analyzer.ts test"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "class-variance-authority": "^0.7.0",
+    "glob": "^10.3.10",
+    "inquirer": "^9.2.12",
+    "ora": "^7.0.1",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/yargs": "^17.0.32",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
