@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Repository Information
+
+- **GitHub Repository**: https://github.com/flexpertsdev/smart-context-chat-ai
+- **Created**: June 22, 2025
+- **Status**: 85% Complete with core features working
+
 ## Project Overview
 
 Smart Context Chat AI - An AI-powered chat application with advanced context management, featuring live AI thinking visualization and persistent conversation storage.
