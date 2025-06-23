@@ -8,6 +8,11 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    // Handle SPA routing
+    middlewareMode: false,
+  },
+  preview: {
+    port: 8080,
   },
   plugins: [
     react(),
