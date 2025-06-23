@@ -87,8 +87,28 @@ export const useNexusChatStore = create<NexusChatStore>()(
       },
 
       setActiveChat: (chatId) => {
-        const chat = chatId ? get().chats.find(c => c.id === chatId) : null
-        set({ activeChat: chat })
+        if (!chatId) {
+          set({ activeChat: null })
+          return
+        }
+        
+        let chat = get().chats.find(c => c.id === chatId)
+        
+        // If chat doesn't exist, create it
+        if (!chat) {
+          chat = {
+            id: chatId,
+            title: `Chat ${new Date().toLocaleDateString()}`,
+            lastActivity: new Date(),
+            contextIds: get().selectedContextIds
+          }
+          set(state => ({
+            chats: [chat!, ...state.chats],
+            activeChat: chat
+          }))
+        } else {
+          set({ activeChat: chat })
+        }
       },
 
       deleteChat: (chatId) => {

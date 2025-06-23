@@ -47,7 +47,7 @@ const NexusChat: React.FC = () => {
       // Set existing chat as active
       setActiveChat(chatId)
     }
-  }, [chatId, createNewChat, navigate, setActiveChat])
+  }, [chatId]) // Remove dependencies to prevent infinite loops
 
   // Get messages for current chat
   const chatMessages = activeChat ? (messages[activeChat.id] || []) : []
