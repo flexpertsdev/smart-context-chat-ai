@@ -19,7 +19,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
   fullHeight = false
 }) => {
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-dvh flex flex-col bg-gray-50">
       {showHeader && (
         <NexusNavigation variant="mobile" />
       )}

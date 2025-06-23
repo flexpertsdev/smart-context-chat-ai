@@ -15,7 +15,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
   fullHeight = false
 }) => {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-dvh bg-gray-50">
       {showSidebar && (
         <NexusNavigation variant="desktop" onNewChat={onNewChat} />
       )}

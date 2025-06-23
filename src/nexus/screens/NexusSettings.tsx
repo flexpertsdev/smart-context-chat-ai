@@ -67,7 +67,7 @@ const NexusSettings: React.FC = () => {
 
   return (
     <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
-      <div className="p-6 max-w-6xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Heading1 className="mb-2">Settings</Heading1>
@@ -135,7 +135,7 @@ const NexusSettings: React.FC = () => {
                 padding="md"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="w-touch-sm h-touch-sm bg-gray-100 rounded-mobile flex items-center justify-center flex-shrink-0">
                     <Icon className="w-5 h-5 text-gray-600" />
                   </div>
                   <div className="flex-1">

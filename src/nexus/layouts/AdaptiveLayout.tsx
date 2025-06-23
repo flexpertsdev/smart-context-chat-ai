@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import MobileLayout from './MobileLayout'
 import TabletLayout from './TabletLayout'
 import DesktopLayout from './DesktopLayout'
@@ -25,45 +25,30 @@ const AdaptiveLayout: React.FC<AdaptiveLayoutProps> = ({
   mobileProps = {},
   desktopProps = {}
 }) => {
-  const [screenSize, setScreenSize] = useState<'mobile' | 'tablet' | 'desktop'>('desktop')
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      const width = window.innerWidth
-      if (width < 768) {
-        setScreenSize('mobile')
-      } else if (width < 1024) {
-        setScreenSize('tablet')
-      } else {
-        setScreenSize('desktop')
-      }
-    }
-
-    checkScreenSize()
-    window.addEventListener('resize', checkScreenSize)
-    return () => window.removeEventListener('resize', checkScreenSize)
-  }, [])
-
-  switch (screenSize) {
-    case 'mobile':
-      return (
+  return (
+    <>
+      {/* Mobile Layout - shown only on mobile devices */}
+      <div className="md:hidden h-dvh">
         <MobileLayout {...mobileProps}>
           {children}
         </MobileLayout>
-      )
-    case 'tablet':
-      return (
+      </div>
+      
+      {/* Tablet Layout - shown only on tablets */}
+      <div className="hidden md:block lg:hidden h-dvh">
         <TabletLayout onNewChat={onNewChat}>
           {children}
         </TabletLayout>
-      )
-    case 'desktop':
-      return (
+      </div>
+      
+      {/* Desktop Layout - shown only on desktop */}
+      <div className="hidden lg:block h-dvh">
         <DesktopLayout onNewChat={onNewChat} {...desktopProps}>
           {children}
         </DesktopLayout>
-      )
-  }
+      </div>
+    </>
+  )
 }
 
 export default AdaptiveLayout

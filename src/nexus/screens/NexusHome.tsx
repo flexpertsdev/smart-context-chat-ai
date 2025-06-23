@@ -90,7 +90,7 @@ const NexusHome: React.FC = () => {
 
   return (
     <AdaptiveLayout>
-      <div className="p-6 max-w-6xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-6xl mx-auto">
         {/* Welcome Section */}
         <div className="mb-8">
           <Heading1 className="mb-2">Welcome back!</Heading1>
@@ -173,7 +173,7 @@ const NexusHome: React.FC = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/nexus/chats/new')}
-          className="fixed bottom-6 right-6 w-12 h-12 bg-green-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 md:hidden"
+          className="fixed bottom-6 right-6 w-fab h-fab bg-green-500 text-white rounded-fab shadow-fab flex items-center justify-center hover:bg-green-600 md:hidden z-fab"
         >
           <Plus className="w-6 h-6" />
         </motion.button>

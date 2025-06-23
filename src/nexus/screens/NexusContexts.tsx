@@ -97,7 +97,7 @@ const NexusContexts: React.FC = () => {
 
   return (
     <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
-      <div className="p-6 max-w-7xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
@@ -125,7 +125,7 @@ const NexusContexts: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search contexts..."
-                className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full pl-10 pr-4 py-2 min-h-touch bg-gray-100 rounded-mobile touch-manipulation focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
             

@@ -11,7 +11,7 @@ const TabletLayout: React.FC<TabletLayoutProps> = ({
   onNewChat
 }) => {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-dvh bg-gray-50">
       <NexusNavigation variant="tablet" onNewChat={onNewChat} />
       
       <main className="flex-1 overflow-y-auto ml-20">
