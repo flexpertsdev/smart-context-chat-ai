@@ -14,6 +14,12 @@ import Settings from "./pages/Settings";
 import TagManagement from "./pages/TagManagement";
 import NotFound from "./pages/NotFound";
 
+// Mobile pages
+import MobileChatList from "./mobile/pages/MobileChatList";
+import MobileChat from "./mobile/pages/MobileChat";
+import MobileSettings from "./mobile/pages/MobileSettings";
+import UISelector from "./pages/UISelector";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -28,7 +34,8 @@ const App = () => {
             <Route path="/onboarding" element={<Onboarding />} />
             
             {/* Main app pages */}
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<UISelector />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/chat/:chatId" element={<Chat />} />
             <Route path="contexts" element={<ContextLibrary />} />
             <Route path="contexts/new" element={<CreateContext />} />
@@ -38,6 +45,13 @@ const App = () => {
             
             {/* Legacy route redirect */}
             <Route path="tag-management" element={<TagManagement />} />
+            
+            {/* Mobile routes */}
+            <Route path="mobile" element={<MobileChatList />} />
+            <Route path="mobile/chat/:chatId" element={<MobileChat />} />
+            <Route path="mobile/contexts" element={<ContextLibrary />} />
+            <Route path="mobile/settings" element={<MobileSettings />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
