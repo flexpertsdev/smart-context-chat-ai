@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, Bell, Shield, Palette, Globe, HelpCircle, LogOut, ChevronRight } from 'lucide-react'
+import { User, Bell, Shield, Palette, Globe, HelpCircle, LogOut, ChevronRight, Key, Eye, EyeOff } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import Card from '../foundations/Card'
 import Button from '../foundations/Button'
 import { Heading1, Heading3, Body, Caption } from '../foundations/Typography'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useNexusChatStore } from '../stores/nexusChatStore'
 
 interface SettingSection {
   id: string
@@ -17,8 +18,29 @@ interface SettingSection {
 
 const NexusSettings: React.FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { getApiKey, setApiKey } = useNexusChatStore()
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [notifications, setNotifications] = useState(true)
+  const [apiKeyValue, setApiKeyValue] = useState('')
+  const [showApiKey, setShowApiKey] = useState(false)
+  const [showMessage, setShowMessage] = useState(false)
+
+  // Show message from navigation state
+  useEffect(() => {
+    if (location.state?.message) {
+      setShowMessage(true)
+      setTimeout(() => setShowMessage(false), 5000)
+    }
+  }, [location.state])
+
+  // Load existing API key
+  useEffect(() => {
+    const existingKey = getApiKey()
+    if (existingKey) {
+      setApiKeyValue(existingKey)
+    }
+  }, [])
 
   const settingSections: SettingSection[] = [
     {
@@ -72,6 +94,85 @@ const NexusSettings: React.FC = () => {
         <div className="mb-8">
           <Heading1 className="mb-2">Settings</Heading1>
           <Body color="secondary">Manage your preferences and account</Body>
+        </div>
+
+        {/* Message Alert */}
+        {showMessage && location.state?.message && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg"
+          >
+            <p className="text-amber-800">{location.state.message}</p>
+          </motion.div>
+        )}
+
+        {/* API Key Section */}
+        <div className="mb-8">
+          <Card padding="lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-touch-sm h-touch-sm bg-green-100 rounded-mobile flex items-center justify-center">
+                <Key className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <Heading3>Anthropic API Key</Heading3>
+                <Caption>Required for AI chat functionality</Caption>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  API Key
+                </label>
+                <div className="relative">
+                  <input
+                    type={showApiKey ? 'text' : 'password'}
+                    value={apiKeyValue}
+                    onChange={(e) => setApiKeyValue(e.target.value)}
+                    placeholder="sk-ant-api03-..."
+                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowApiKey(!showApiKey)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <Caption className="mt-2">
+                  Get your API key from{' '}
+                  <a
+                    href="https://console.anthropic.com/settings/keys"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green-600 hover:text-green-700 underline"
+                  >
+                    Anthropic Console
+                  </a>
+                </Caption>
+              </div>
+              
+              <Button
+                variant="primary"
+                fullWidth
+                onClick={() => {
+                  setApiKey(apiKeyValue)
+                  setShowMessage(true)
+                  // Update location state to show saved message
+                  navigate('.', { 
+                    replace: true, 
+                    state: { message: 'API key saved successfully!' } 
+                  })
+                }}
+                disabled={!apiKeyValue.trim()}
+              >
+                Save API Key
+              </Button>
+            </div>
+          </Card>
         </div>
 
         {/* Quick Settings */}

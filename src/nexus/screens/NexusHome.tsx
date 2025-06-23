@@ -6,14 +6,7 @@ import Card from '../foundations/Card'
 import Button from '../foundations/Button'
 import { Heading1, Heading3, Body, Caption } from '../foundations/Typography'
 import { useNavigate } from 'react-router-dom'
-
-interface RecentChat {
-  id: string
-  title: string
-  lastMessage: string
-  timestamp: Date
-  unread?: boolean
-}
+import { useNexusChatStore } from '../stores/nexusChatStore'
 
 interface QuickAction {
   id: string
@@ -26,28 +19,12 @@ interface QuickAction {
 
 const NexusHome: React.FC = () => {
   const navigate = useNavigate()
+  const { chats } = useNexusChatStore()
 
-  const recentChats: RecentChat[] = [
-    {
-      id: '1',
-      title: 'Project Planning Assistant',
-      lastMessage: 'Here\'s the timeline breakdown for your new feature...',
-      timestamp: new Date(Date.now() - 1000 * 60 * 30),
-      unread: true
-    },
-    {
-      id: '2',
-      title: 'Code Review Helper',
-      lastMessage: 'I\'ve analyzed the pull request and found 3 suggestions...',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2)
-    },
-    {
-      id: '3',
-      title: 'Learning Path Guide',
-      lastMessage: 'Based on your goals, I recommend starting with React hooks...',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24)
-    }
-  ]
+  // Get recent chats sorted by last activity
+  const recentChats = [...chats]
+    .sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime())
+    .slice(0, 3)
 
   const quickActions: QuickAction[] = [
     {
@@ -139,29 +116,38 @@ const NexusHome: React.FC = () => {
           </div>
           
           <div className="space-y-3">
-            {recentChats.map((chat) => (
-              <Card
-                key={chat.id}
-                hoverable
-                onClick={() => navigate(`/nexus/chats/${chat.id}`)}
-                padding="md"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium truncate">{chat.title}</h4>
-                      {chat.unread && (
-                        <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
-                      )}
+            {recentChats.length > 0 ? (
+              recentChats.map((chat) => (
+                <Card
+                  key={chat.id}
+                  hoverable
+                  onClick={() => navigate(`/nexus/chats/${chat.id}`)}
+                  padding="md"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-medium truncate">{chat.title}</h4>
+                      </div>
+                      <Caption className="line-clamp-1">
+                        {chat.lastMessage?.content || 'No messages yet'}
+                      </Caption>
                     </div>
-                    <Caption className="line-clamp-1">{chat.lastMessage}</Caption>
+                    <Caption className="flex-shrink-0 ml-4">
+                      {formatTimestamp(chat.lastActivity)}
+                    </Caption>
                   </div>
-                  <Caption className="flex-shrink-0 ml-4">
-                    {formatTimestamp(chat.timestamp)}
-                  </Caption>
+                </Card>
+              ))
+            ) : (
+              <Card padding="lg">
+                <div className="text-center py-4">
+                  <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <Body color="secondary">No chats yet</Body>
+                  <Caption>Start a new conversation to get started</Caption>
                 </div>
               </Card>
-            ))}
+            )}
           </div>
         </div>
 

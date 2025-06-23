@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import ChatHeader from '../components/chat/ChatHeader'
 import MessageBubble from '../components/chat/MessageBubble'
@@ -9,107 +9,71 @@ import ThinkingDrawer from '../components/ai/ThinkingDrawer'
 import ContextSelector from '../components/context/ContextSelector'
 import ContextBottomSheet from '../components/context/ContextBottomSheet'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Library, ChevronRight } from 'lucide-react'
+import { Library, ChevronRight, AlertCircle } from 'lucide-react'
 import Button from '../foundations/Button'
-
-interface Message {
-  id: string
-  content: string
-  sender: 'user' | 'ai'
-  timestamp: Date
-  status?: 'sending' | 'sent' | 'delivered' | 'read'
-  thinking?: any // AI thinking data
-}
-
-interface Context {
-  id: string
-  title: string
-  category: string
-  tags: string[]
-}
+import { useNexusChatStore } from '../stores/nexusChatStore'
+import { NexusMessage } from '../services/anthropicClient'
 
 const NexusChat: React.FC = () => {
   const { chatId } = useParams()
-  const [messages, setMessages] = useState<Message[]>([])
-  const [isThinking, setIsThinking] = useState(false)
+  const navigate = useNavigate()
   const [showContextSelector, setShowContextSelector] = useState(false)
-  const [selectedContexts, setSelectedContexts] = useState<string[]>([])
   const [showThinkingDrawer, setShowThinkingDrawer] = useState(false)
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null)
+  const [selectedMessage, setSelectedMessage] = useState<NexusMessage | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  // Mock contexts
-  const contexts: Context[] = [
-    { id: '1', title: 'React Best Practices', category: 'Development', tags: ['react', 'frontend'] },
-    { id: '2', title: 'TypeScript Guidelines', category: 'Development', tags: ['typescript', 'types'] },
-    { id: '3', title: 'API Documentation', category: 'Reference', tags: ['api', 'endpoints'] },
-    { id: '4', title: 'Project Requirements', category: 'Planning', tags: ['requirements', 'specs'] },
-  ]
+  // Get store state and actions
+  const {
+    activeChat,
+    messages,
+    contexts,
+    selectedContextIds,
+    isThinking,
+    error,
+    sendMessage,
+    setActiveChat,
+    setSelectedContextIds,
+    createNewChat,
+    getApiKey
+  } = useNexusChatStore()
+
+  // Initialize chat
+  useEffect(() => {
+    if (chatId === 'new') {
+      // Create a new chat
+      const newChat = createNewChat()
+      navigate(`/nexus/chats/${newChat.id}`, { replace: true })
+    } else if (chatId) {
+      // Set existing chat as active
+      setActiveChat(chatId)
+    }
+  }, [chatId, createNewChat, navigate, setActiveChat])
+
+  // Get messages for current chat
+  const chatMessages = activeChat ? (messages[activeChat.id] || []) : []
 
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, isThinking])
+  }, [chatMessages, isThinking])
 
   const handleSendMessage = async (content: string) => {
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content,
-      sender: 'user',
-      timestamp: new Date(),
-      status: 'sent'
+    // Check if API key is configured
+    if (!getApiKey()) {
+      navigate('/nexus/settings', { 
+        state: { message: 'Please set your Anthropic API key to start chatting' } 
+      })
+      return
     }
 
-    setMessages(prev => [...prev, userMessage])
-    setIsThinking(true)
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: `I understand you're asking about "${content}". Let me help you with that based on the selected contexts.`,
-        sender: 'ai',
-        timestamp: new Date(),
-        thinking: {
-          assumptions: [
-            {
-              text: "User is asking about React development",
-              confidence: 'high',
-              reasoning: "The question mentions React components"
-            }
-          ],
-          uncertainties: [
-            {
-              question: "Specific React version not mentioned",
-              priority: 'medium',
-              suggestedContexts: ['React 18 Features']
-            }
-          ],
-          confidenceLevel: 'high',
-          reasoningSteps: [
-            "Analyzed the user's question",
-            "Identified relevant contexts",
-            "Generated appropriate response"
-          ],
-          suggestedContexts: [
-            {
-              title: "React Hooks Guide",
-              description: "Comprehensive guide to React Hooks",
-              reason: "Would provide more detailed information"
-            }
-          ]
-        }
-      }
-      setMessages(prev => [...prev, aiMessage])
-      setIsThinking(false)
-    }, 2000)
+    await sendMessage(content)
   }
 
   const toggleContext = (contextId: string) => {
-    setSelectedContexts(prev => 
-      prev.includes(contextId)
-        ? prev.filter(id => id !== contextId)
-        : [...prev, contextId]
+    setSelectedContextIds(
+      selectedContextIds.includes(contextId)
+        ? selectedContextIds.filter(id => id !== contextId)
+        : [...selectedContextIds, contextId]
     )
   }
 
@@ -137,30 +101,64 @@ const NexusChat: React.FC = () => {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-gray-50">
-            {messages.length === 0 && (
+            {chatMessages.length === 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-center py-12"
               >
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Start a new conversation
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Select contexts to enhance AI responses
-                </p>
-                <Button
-                  variant="secondary"
-                  icon={<Library className="w-4 h-4" />}
-                  onClick={() => setShowContextSelector(true)}
-                >
-                  Select Contexts
-                </Button>
+                {!getApiKey() ? (
+                  <>
+                    <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      API Key Required
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      Please set your Anthropic API key in settings to start chatting
+                    </p>
+                    <Button
+                      variant="primary"
+                      onClick={() => navigate('/nexus/settings')}
+                    >
+                      Go to Settings
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Start a new conversation
+                    </h3>
+                    <p className="text-gray-600 mb-6">
+                      Select contexts to enhance AI responses
+                    </p>
+                    <Button
+                      variant="secondary"
+                      icon={<Library className="w-4 h-4" />}
+                      onClick={() => setShowContextSelector(true)}
+                    >
+                      Select Contexts
+                    </Button>
+                  </>
+                )}
+              </motion.div>
+            )}
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mx-4 mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
+              >
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h4 className="font-medium text-red-900">Error</h4>
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
               </motion.div>
             )}
 
             <div className="space-y-4">
-              {messages.map((message, index) => (
+              {chatMessages.map((message) => (
                 <MessageBubble
                   key={message.id}
                   message={message}
@@ -198,7 +196,7 @@ const NexusChat: React.FC = () => {
           </div>
 
           {/* Context Bar */}
-          {selectedContexts.length > 0 && (
+          {selectedContextIds.length > 0 && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
@@ -206,7 +204,7 @@ const NexusChat: React.FC = () => {
             >
               <div className="flex items-center gap-2 overflow-x-auto">
                 <span className="text-sm text-gray-600 flex-shrink-0">Contexts:</span>
-                {selectedContexts.map(contextId => {
+                {selectedContextIds.map(contextId => {
                   const context = contexts.find(c => c.id === contextId)
                   return context ? (
                     <span
@@ -265,9 +263,9 @@ const NexusChat: React.FC = () => {
                   </div>
                   <ContextSelector
                     contexts={contexts}
-                    selectedContexts={selectedContexts}
+                    selectedContexts={selectedContextIds}
                     onToggleContext={toggleContext}
-                    onClearAll={() => setSelectedContexts([])}
+                    onClearAll={() => setSelectedContextIds([])}
                   />
                 </div>
               </motion.div>
@@ -281,9 +279,9 @@ const NexusChat: React.FC = () => {
         isOpen={showContextSelector}
         onClose={() => setShowContextSelector(false)}
         contexts={contexts}
-        selectedContexts={selectedContexts}
+        selectedContexts={selectedContextIds}
         onToggleContext={toggleContext}
-        onClearAll={() => setSelectedContexts([])}
+        onClearAll={() => setSelectedContextIds([])}
       />
 
       {/* Thinking Drawer */}
