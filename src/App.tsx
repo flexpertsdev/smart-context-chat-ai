@@ -21,7 +21,7 @@ import MobileSettings from "./mobile/pages/MobileSettings";
 import UISelector from "./pages/UISelector";
 
 // Nexus UI
-import NexusShowcase from "./nexus/NexusShowcase";
+import NexusApp from "./nexus/NexusApp";
 
 const queryClient = new QueryClient();
 
@@ -56,7 +56,7 @@ const App = () => {
             <Route path="mobile/settings" element={<MobileSettings />} />
             
             {/* Nexus UI routes */}
-            <Route path="nexus" element={<NexusShowcase />} />
+            <Route path="nexus/*" element={<NexusApp />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
