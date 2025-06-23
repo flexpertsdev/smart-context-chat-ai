@@ -78,13 +78,9 @@ const NexusChatList: React.FC = () => {
 
   return (
     <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="p-6 max-w-7xl mx-auto">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <Heading1>Chats</Heading1>
             <Button
@@ -98,15 +94,10 @@ const NexusChatList: React.FC = () => {
           <Body color="secondary">
             {filteredChats.length} conversations
           </Body>
-        </motion.div>
+        </div>
 
         {/* Search */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -117,37 +108,27 @@ const NexusChatList: React.FC = () => {
               className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
-        </motion.div>
+        </div>
 
         {/* Chat List */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-3"
-        >
-          {filteredChats.map((chat, index) => (
-            <motion.div
+        <div className="space-y-3">
+          {filteredChats.map((chat) => (
+            <Card
               key={chat.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + index * 0.05 }}
+              hoverable
+              onClick={() => navigate(`/nexus/chats/${chat.id}`)}
+              padding="md"
             >
-              <Card
-                hoverable
-                onClick={() => navigate(`/nexus/chats/${chat.id}`)}
-                padding="md"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-medium truncate">{chat.title}</h3>
-                      {chat.unread && (
-                        <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
-                      )}
-                    </div>
-                    <Caption className="line-clamp-1 mb-2">{chat.lastMessage}</Caption>
-                    <div className="flex items-center gap-4 text-gray-500">
+              <div className="flex items-start justify-between">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-medium truncate">{chat.title}</h3>
+                    {chat.unread && (
+                      <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
+                    )}
+                  </div>
+                  <Caption className="line-clamp-1 mb-2">{chat.lastMessage}</Caption>
+                  <div className="flex items-center gap-4 text-gray-500">
                       <div className="flex items-center gap-1">
                         <MessageSquare className="w-3 h-3" />
                         <Caption>Chat</Caption>
@@ -164,16 +145,11 @@ const NexusChatList: React.FC = () => {
                   </div>
                 </div>
               </Card>
-            </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         {filteredChats.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
-          >
+          <div className="text-center py-12">
             <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <Body color="secondary">No chats found</Body>
             <Button
@@ -183,7 +159,7 @@ const NexusChatList: React.FC = () => {
             >
               Start a New Chat
             </Button>
-          </motion.div>
+          </div>
         )}
       </div>
     </AdaptiveLayout>

@@ -5,6 +5,7 @@ import ChatHeader from '../components/chat/ChatHeader'
 import MessageBubble from '../components/chat/MessageBubble'
 import MessageComposer from '../components/chat/MessageComposer'
 import ThinkingIndicator from '../components/ai/ThinkingIndicator'
+import ThinkingDrawer from '../components/ai/ThinkingDrawer'
 import ContextSelector from '../components/context/ContextSelector'
 import ContextBottomSheet from '../components/context/ContextBottomSheet'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -17,6 +18,7 @@ interface Message {
   sender: 'user' | 'ai'
   timestamp: Date
   status?: 'sending' | 'sent' | 'delivered' | 'read'
+  thinking?: any // AI thinking data
 }
 
 interface Context {
@@ -32,6 +34,8 @@ const NexusChat: React.FC = () => {
   const [isThinking, setIsThinking] = useState(false)
   const [showContextSelector, setShowContextSelector] = useState(false)
   const [selectedContexts, setSelectedContexts] = useState<string[]>([])
+  const [showThinkingDrawer, setShowThinkingDrawer] = useState(false)
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Mock contexts
@@ -65,7 +69,36 @@ const NexusChat: React.FC = () => {
         id: (Date.now() + 1).toString(),
         content: `I understand you're asking about "${content}". Let me help you with that based on the selected contexts.`,
         sender: 'ai',
-        timestamp: new Date()
+        timestamp: new Date(),
+        thinking: {
+          assumptions: [
+            {
+              text: "User is asking about React development",
+              confidence: 'high',
+              reasoning: "The question mentions React components"
+            }
+          ],
+          uncertainties: [
+            {
+              question: "Specific React version not mentioned",
+              priority: 'medium',
+              suggestedContexts: ['React 18 Features']
+            }
+          ],
+          confidenceLevel: 'high',
+          reasoningSteps: [
+            "Analyzed the user's question",
+            "Identified relevant contexts",
+            "Generated appropriate response"
+          ],
+          suggestedContexts: [
+            {
+              title: "React Hooks Guide",
+              description: "Comprehensive guide to React Hooks",
+              reason: "Would provide more detailed information"
+            }
+          ]
+        }
       }
       setMessages(prev => [...prev, aiMessage])
       setIsThinking(false)
@@ -126,13 +159,17 @@ const NexusChat: React.FC = () => {
               </motion.div>
             )}
 
-            <div className="max-w-3xl mx-auto space-y-4">
+            <div className="space-y-4">
               {messages.map((message, index) => (
                 <MessageBubble
                   key={message.id}
                   message={message}
                   showAvatar={true}
                   isGrouped={false}
+                  onClick={message.thinking ? () => {
+                    setSelectedMessage(message)
+                    setShowThinkingDrawer(true)
+                  } : undefined}
                 />
               ))}
               
@@ -201,30 +238,40 @@ const NexusChat: React.FC = () => {
         {/* Desktop Context Selector Sidebar */}
         <AnimatePresence>
           {showContextSelector && (
-            <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 320, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              className="hidden md:block border-l border-gray-200 bg-white overflow-hidden"
-            >
-              <div className="h-full">
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                  <h3 className="font-semibold">Select Contexts</h3>
-                  <button
-                    onClick={() => setShowContextSelector(false)}
-                    className="p-1 hover:bg-gray-100 rounded"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
+            <>
+              {/* Backdrop for click outside */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="hidden md:block fixed inset-0 z-40"
+                onClick={() => setShowContextSelector(false)}
+              />
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 320, opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
+                className="hidden md:block relative z-50 border-l border-gray-200 bg-white overflow-hidden"
+              >
+                <div className="h-full">
+                  <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                    <h3 className="font-semibold">Select Contexts</h3>
+                    <button
+                      onClick={() => setShowContextSelector(false)}
+                      className="p-1 hover:bg-gray-100 rounded"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <ContextSelector
+                    contexts={contexts}
+                    selectedContexts={selectedContexts}
+                    onToggleContext={toggleContext}
+                    onClearAll={() => setSelectedContexts([])}
+                  />
                 </div>
-                <ContextSelector
-                  contexts={contexts}
-                  selectedContexts={selectedContexts}
-                  onToggleContext={toggleContext}
-                  onClearAll={() => setSelectedContexts([])}
-                />
-              </div>
-            </motion.div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>
@@ -237,6 +284,16 @@ const NexusChat: React.FC = () => {
         selectedContexts={selectedContexts}
         onToggleContext={toggleContext}
         onClearAll={() => setSelectedContexts([])}
+      />
+
+      {/* Thinking Drawer */}
+      <ThinkingDrawer
+        isOpen={showThinkingDrawer}
+        onClose={() => {
+          setShowThinkingDrawer(false)
+          setSelectedMessage(null)
+        }}
+        thinking={selectedMessage?.thinking}
       />
     </AdaptiveLayout>
   )

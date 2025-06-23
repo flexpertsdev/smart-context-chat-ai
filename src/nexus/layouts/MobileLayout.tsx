@@ -1,5 +1,4 @@
 import React from 'react'
-import { motion } from 'framer-motion'
 import NexusNavigation from '../components/NexusNavigation'
 
 interface MobileLayoutProps {
@@ -33,11 +32,8 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
           {children}
         </div>
       ) : (
-        <motion.main 
+        <main 
           className="flex-1 overflow-y-auto overscroll-contain"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
           style={{
             paddingTop: showHeader ? 'env(safe-area-inset-top, 0px)' : '0',
             paddingBottom: showBottomNav ? 'calc(56px + env(safe-area-inset-bottom, 0px))' : '0',
@@ -47,7 +43,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
           <div style={{ paddingTop: showHeader ? '56px' : '0' }}>
             {children}
           </div>
-        </motion.main>
+        </main>
       )}
     </div>
   )

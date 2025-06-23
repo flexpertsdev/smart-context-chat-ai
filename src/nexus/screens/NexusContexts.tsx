@@ -99,11 +99,7 @@ const NexusContexts: React.FC = () => {
     <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
       <div className="p-6 max-w-7xl mx-auto">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <Heading1>Context Library</Heading1>
             <Button
@@ -117,15 +113,10 @@ const NexusContexts: React.FC = () => {
           <Body color="secondary">
             {filteredContexts.length} contexts available
           </Body>
-        </motion.div>
+        </div>
 
         {/* Search and Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -195,43 +186,30 @@ const NexusContexts: React.FC = () => {
               ))}
             </motion.div>
           )}
-        </motion.div>
+        </div>
 
         {/* Contexts Grid/List */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
+        <div
           className={viewMode === 'grid' 
             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' 
             : 'space-y-3'
           }
         >
-          {filteredContexts.map((context, index) => (
-            <motion.div
+          {filteredContexts.map((context) => (
+            <ContextCard
               key={context.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + index * 0.05 }}
-            >
-              <ContextCard
-                context={context}
-                onClick={() => handleContextClick(context.id)}
-                onFavorite={() => toggleFavorite(context.id)}
-                variant={viewMode === 'list' ? 'detailed' : 'compact'}
-              />
-            </motion.div>
+              context={context}
+              onClick={() => handleContextClick(context.id)}
+              onFavorite={() => toggleFavorite(context.id)}
+              variant={viewMode === 'list' ? 'detailed' : 'compact'}
+            />
           ))}
-        </motion.div>
+        </div>
 
         {filteredContexts.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
-          >
+          <div className="text-center py-12">
             <Body color="secondary">No contexts found matching your search.</Body>
-          </motion.div>
+          </div>
         )}
       </div>
     </AdaptiveLayout>

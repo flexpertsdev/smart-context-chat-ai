@@ -11,17 +11,21 @@ interface MessageBubbleProps {
     timestamp: Date
     status?: 'sending' | 'sent' | 'delivered' | 'read'
     isThinking?: boolean
+    thinking?: any // AI thinking data
   }
   showAvatar?: boolean
   isGrouped?: boolean
+  onClick?: () => void
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
   showAvatar = true,
-  isGrouped = false
+  isGrouped = false,
+  onClick
 }) => {
   const isUser = message.sender === 'user'
+  const isClickable = !isUser && message.thinking && onClick
 
   const statusIcon = () => {
     if (!isUser) return null
@@ -50,9 +54,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.2 }}
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} ${isGrouped ? 'mt-1' : 'mt-4'}`}
     >
       <div className={`flex ${isUser ? 'flex-row-reverse' : 'flex-row'} items-end max-w-[70%] gap-2`}>
@@ -71,7 +75,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                 : 'bg-white text-gray-900 rounded-bl-md border border-gray-200'
               }
               ${message.isThinking ? 'min-w-[60px]' : ''}
+              ${isClickable ? 'cursor-pointer hover:bg-gray-50 transition-colors' : ''}
             `}
+            onClick={isClickable ? onClick : undefined}
           >
             {message.isThinking ? (
               <div className="flex gap-1 py-1">

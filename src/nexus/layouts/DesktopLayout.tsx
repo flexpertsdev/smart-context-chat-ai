@@ -1,5 +1,4 @@
 import React from 'react'
-import { motion } from 'framer-motion'
 import NexusNavigation from '../components/NexusNavigation'
 
 interface DesktopLayoutProps {
@@ -21,12 +20,9 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
         <NexusNavigation variant="desktop" onNewChat={onNewChat} />
       )}
       
-      <motion.main 
+      <main 
         className={`flex-1 ${fullHeight ? 'flex flex-col' : 'overflow-y-auto'}`}
         style={{ marginLeft: showSidebar ? '256px' : '0' }}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3 }}
       >
         {fullHeight ? (
           children
@@ -35,7 +31,7 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
             {children}
           </div>
         )}
-      </motion.main>
+      </main>
     </div>
   )
 }

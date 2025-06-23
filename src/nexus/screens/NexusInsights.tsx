@@ -130,11 +130,7 @@ const NexusInsights: React.FC = () => {
     <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
       <div className="p-6 max-w-6xl mx-auto">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <Heading1>AI Insights</Heading1>
             <Button
@@ -146,15 +142,10 @@ const NexusInsights: React.FC = () => {
             </Button>
           </div>
           <Body color="secondary">Discover patterns and optimize your workflow</Body>
-        </motion.div>
+        </div>
 
         {/* Period Selector */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <div className="inline-flex items-center bg-gray-100 rounded-lg p-1">
             {(['week', 'month', 'all'] as const).map((period) => (
               <button
@@ -170,55 +161,39 @@ const NexusInsights: React.FC = () => {
               </button>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Metrics Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
-        >
-          {metrics.map((metric, index) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {metrics.map((metric) => {
             const Icon = metric.icon
             return (
-              <motion.div
-                key={metric.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + index * 0.05 }}
-              >
-                <Card>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className={`p-2 rounded-lg bg-${metric.color}-100`}>
-                      <Icon className={`w-5 h-5 text-${metric.color}-600`} />
-                    </div>
-                    <span className={`text-sm font-medium ${
-                      metric.change >= 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {metric.change >= 0 ? '+' : ''}{metric.change}%
-                    </span>
+              <Card key={metric.id}>
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`p-2 rounded-lg bg-${metric.color}-100`}>
+                    <Icon className={`w-5 h-5 text-${metric.color}-600`} />
+                  </div>
+                  <span className={`text-sm font-medium ${
+                    metric.change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {metric.change >= 0 ? '+' : ''}{metric.change}%
+                  </span>
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold mb-1">{metric.value}</h3>
                     <Caption>{metric.title}</Caption>
                   </div>
                 </Card>
-              </motion.div>
             )
           })}
-        </motion.div>
+        </div>
 
         {/* Insights List */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+        <div>
           <Heading3 className="mb-4">Recent Insights</Heading3>
           
           <div className="space-y-4">
-            {filteredInsights.map((insight, index) => {
+            {filteredInsights.map((insight) => {
               const iconMap = {
                 suggestion: Lightbulb,
                 analysis: BarChart3,
@@ -235,56 +210,49 @@ const NexusInsights: React.FC = () => {
               const color = colorMap[insight.type]
               
               return (
-                <motion.div
-                  key={insight.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + index * 0.05 }}
-                >
-                  <Card hoverable>
-                    <div className="flex items-start gap-4">
-                      <div className={`p-3 rounded-lg bg-${color}-100 flex-shrink-0`}>
-                        <Icon className={`w-6 h-6 text-${color}-600`} />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h3 className="font-semibold mb-1">{insight.title}</h3>
-                            <Caption className="text-gray-600">
-                              {insight.description}
-                            </Caption>
-                          </div>
-                          <div className="text-right ml-4">
-                            <Caption className="text-gray-500">
-                              {Math.round(insight.confidence * 100)}% confidence
-                            </Caption>
-                            <Caption className="text-gray-400">
-                              {insight.category}
-                            </Caption>
-                          </div>
-                        </div>
-                        {insight.actions && (
-                          <div className="flex items-center gap-2 mt-3">
-                            {insight.actions.map((action, actionIndex) => (
-                              <Button
-                                key={actionIndex}
-                                size="sm"
-                                variant={actionIndex === 0 ? 'primary' : 'ghost'}
-                                onClick={action.action}
-                              >
-                                {action.label}
-                              </Button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                <Card key={insight.id} hoverable>
+                  <div className="flex items-start gap-4">
+                    <div className={`p-3 rounded-lg bg-${color}-100 flex-shrink-0`}>
+                      <Icon className={`w-6 h-6 text-${color}-600`} />
                     </div>
-                  </Card>
-                </motion.div>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="font-semibold mb-1">{insight.title}</h3>
+                          <Caption className="text-gray-600">
+                            {insight.description}
+                          </Caption>
+                        </div>
+                        <div className="text-right ml-4">
+                          <Caption className="text-gray-500">
+                            {Math.round(insight.confidence * 100)}% confidence
+                          </Caption>
+                          <Caption className="text-gray-400">
+                            {insight.category}
+                          </Caption>
+                        </div>
+                      </div>
+                      {insight.actions && (
+                        <div className="flex items-center gap-2 mt-3">
+                          {insight.actions.map((action, actionIndex) => (
+                            <Button
+                              key={actionIndex}
+                              size="sm"
+                              variant={actionIndex === 0 ? 'primary' : 'ghost'}
+                              onClick={action.action}
+                            >
+                              {action.label}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
               )
             })}
           </div>
-        </motion.div>
+        </div>
 
         {/* Show live insights panel */}
         {showInsightsPanel && (

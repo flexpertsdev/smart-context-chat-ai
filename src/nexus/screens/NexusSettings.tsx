@@ -67,24 +67,15 @@ const NexusSettings: React.FC = () => {
 
   return (
     <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="p-6 max-w-6xl mx-auto">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <Heading1 className="mb-2">Settings</Heading1>
           <Body color="secondary">Manage your preferences and account</Body>
-        </motion.div>
+        </div>
 
         {/* Quick Settings */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <Card padding="lg">
             <Heading3 className="mb-4">Quick Settings</Heading3>
             
@@ -130,52 +121,36 @@ const NexusSettings: React.FC = () => {
               </div>
             </div>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Setting Sections */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-3"
-        >
-          {settingSections.map((section, index) => {
+        <div className="space-y-3">
+          {settingSections.map((section) => {
             const Icon = section.icon
             return (
-              <motion.div
+              <Card
                 key={section.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + index * 0.05 }}
+                hoverable
+                onClick={section.action}
+                padding="md"
               >
-                <Card
-                  hoverable
-                  onClick={section.action}
-                  padding="md"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5 text-gray-600" />
-                    </div>
-                    <div className="flex-1">
-                      <Body className="font-medium">{section.title}</Body>
-                      <Caption>{section.description}</Caption>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-5 h-5 text-gray-600" />
                   </div>
-                </Card>
-              </motion.div>
+                  <div className="flex-1">
+                    <Body className="font-medium">{section.title}</Body>
+                    <Caption>{section.description}</Caption>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+              </Card>
             )
           })}
-        </motion.div>
+        </div>
 
         {/* Sign Out */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-8"
-        >
+        <div className="mt-8">
           <Button
             variant="danger"
             fullWidth
@@ -187,17 +162,12 @@ const NexusSettings: React.FC = () => {
           >
             Sign Out
           </Button>
-        </motion.div>
+        </div>
 
         {/* Version Info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8 text-center"
-        >
+        <div className="mt-8 text-center">
           <Caption>Nexus UI v1.0.0</Caption>
-        </motion.div>
+        </div>
       </div>
     </AdaptiveLayout>
   )

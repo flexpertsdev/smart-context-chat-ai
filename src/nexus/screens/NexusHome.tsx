@@ -92,60 +92,41 @@ const NexusHome: React.FC = () => {
     <AdaptiveLayout>
       <div className="p-6 max-w-6xl mx-auto">
         {/* Welcome Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <Heading1 className="mb-2">Welcome back!</Heading1>
           <Body color="secondary">How can I help you today?</Body>
-        </motion.div>
+        </div>
 
         {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <Heading3 className="mb-4">Quick Actions</Heading3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {quickActions.map((action, index) => {
+            {quickActions.map((action) => {
               const Icon = action.icon
               return (
-                <motion.div
+                <Card
                   key={action.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.1 + index * 0.05 }}
+                  hoverable
+                  onClick={action.action}
+                  className="h-full"
                 >
-                  <Card
-                    hoverable
-                    onClick={action.action}
-                    className="h-full"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className={`p-3 rounded-lg bg-${action.color}-100`}>
-                        <Icon className={`w-6 h-6 text-${action.color}-600`} />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold mb-1">{action.title}</h3>
-                        <Caption>{action.description}</Caption>
-                      </div>
+                  <div className="flex items-start gap-4">
+                    <div className={`p-3 rounded-lg bg-${action.color}-100`}>
+                      <Icon className={`w-6 h-6 text-${action.color}-600`} />
                     </div>
-                  </Card>
-                </motion.div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold mb-1">{action.title}</h3>
+                      <Caption>{action.description}</Caption>
+                    </div>
+                  </div>
+                </Card>
               )
             })}
           </div>
-        </motion.div>
+        </div>
 
         {/* Recent Chats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div>
           <div className="flex items-center justify-between mb-4">
             <Heading3>Recent Chats</Heading3>
             <Button
@@ -158,37 +139,31 @@ const NexusHome: React.FC = () => {
           </div>
           
           <div className="space-y-3">
-            {recentChats.map((chat, index) => (
-              <motion.div
+            {recentChats.map((chat) => (
+              <Card
                 key={chat.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + index * 0.05 }}
+                hoverable
+                onClick={() => navigate(`/nexus/chats/${chat.id}`)}
+                padding="md"
               >
-                <Card
-                  hoverable
-                  onClick={() => navigate(`/nexus/chats/${chat.id}`)}
-                  padding="md"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-medium truncate">{chat.title}</h4>
-                        {chat.unread && (
-                          <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
-                        )}
-                      </div>
-                      <Caption className="line-clamp-1">{chat.lastMessage}</Caption>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-medium truncate">{chat.title}</h4>
+                      {chat.unread && (
+                        <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
+                      )}
                     </div>
-                    <Caption className="flex-shrink-0 ml-4">
-                      {formatTimestamp(chat.timestamp)}
-                    </Caption>
+                    <Caption className="line-clamp-1">{chat.lastMessage}</Caption>
                   </div>
-                </Card>
-              </motion.div>
+                  <Caption className="flex-shrink-0 ml-4">
+                    {formatTimestamp(chat.timestamp)}
+                  </Caption>
+                </div>
+              </Card>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Floating Action Button */}
         <motion.button
@@ -198,7 +173,7 @@ const NexusHome: React.FC = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/nexus/chats/new')}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-green-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 md:hidden"
+          className="fixed bottom-6 right-6 w-12 h-12 bg-green-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 md:hidden"
         >
           <Plus className="w-6 h-6" />
         </motion.button>

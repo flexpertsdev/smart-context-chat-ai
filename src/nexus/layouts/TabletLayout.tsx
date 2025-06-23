@@ -1,5 +1,4 @@
 import React from 'react'
-import { motion } from 'framer-motion'
 import NexusNavigation from '../components/NexusNavigation'
 
 interface TabletLayoutProps {
@@ -15,16 +14,11 @@ const TabletLayout: React.FC<TabletLayoutProps> = ({
     <div className="flex h-screen bg-gray-50">
       <NexusNavigation variant="tablet" onNewChat={onNewChat} />
       
-      <motion.main 
-        className="flex-1 overflow-y-auto ml-20"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+      <main className="flex-1 overflow-y-auto ml-20">
         <div className="container mx-auto max-w-4xl">
           {children}
         </div>
-      </motion.main>
+      </main>
     </div>
   )
 }

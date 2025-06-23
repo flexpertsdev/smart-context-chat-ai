@@ -72,13 +72,9 @@ const NexusProfile: React.FC = () => {
 
   return (
     <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="p-6 max-w-6xl mx-auto">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <div className="flex items-center gap-4 mb-6">
             <button
               onClick={() => navigate('/nexus/settings')}
@@ -113,15 +109,10 @@ const NexusProfile: React.FC = () => {
               </div>
             )}
           </div>
-        </motion.div>
+        </div>
 
         {/* Avatar and Basic Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <Card padding="lg">
             <div className="flex items-start gap-6">
               {/* Avatar */}
@@ -184,15 +175,10 @@ const NexusProfile: React.FC = () => {
               </div>
             </div>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Bio */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <Card padding="lg">
             <Heading3 className="mb-4">About</Heading3>
             {isEditing ? (
@@ -206,14 +192,10 @@ const NexusProfile: React.FC = () => {
               <Body>{displayData.bio}</Body>
             )}
           </Card>
-        </motion.div>
+        </div>
 
         {/* Contact Information */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+        <div>
           <Card padding="lg">
             <Heading3 className="mb-4">Contact Information</Heading3>
             <div className="space-y-4">
@@ -288,7 +270,7 @@ const NexusProfile: React.FC = () => {
               </div>
             </div>
           </Card>
-        </motion.div>
+        </div>
       </div>
     </AdaptiveLayout>
   )

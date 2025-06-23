@@ -131,13 +131,9 @@ const NexusContextDetails: React.FC = () => {
 
   return (
     <AdaptiveLayout onNewChat={() => navigate('/nexus/chats/new')}>
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="p-6 max-w-6xl mx-auto">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <div className="flex items-center gap-4 mb-4">
             <button
               onClick={() => navigate('/nexus/contexts')}
@@ -211,15 +207,10 @@ const NexusContextDetails: React.FC = () => {
             </div>
             <Caption>{displayContext.wordCount} words</Caption>
           </div>
-        </motion.div>
+        </div>
 
         {/* Tags */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-6"
-        >
+        <div className="mb-6">
           <Card padding="md">
             <div className="flex items-center gap-2 mb-3">
               <Tag className="w-4 h-4 text-gray-600" />
@@ -262,14 +253,10 @@ const NexusContextDetails: React.FC = () => {
               )}
             </div>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div>
           <Card padding="lg">
             {isEditing ? (
               <textarea
@@ -286,16 +273,11 @@ const NexusContextDetails: React.FC = () => {
               </div>
             )}
           </Card>
-        </motion.div>
+        </div>
 
         {/* Actions */}
         {!isEditing && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-6 flex items-center justify-center gap-4"
-          >
+          <div className="mt-6 flex items-center justify-center gap-4">
             <Button
               variant="primary"
               onClick={() => navigate(`/nexus/chats/new?context=${context.id}`)}
@@ -311,7 +293,7 @@ const NexusContextDetails: React.FC = () => {
             >
               Copy to Clipboard
             </Button>
-          </motion.div>
+          </div>
         )}
       </div>
     </AdaptiveLayout>

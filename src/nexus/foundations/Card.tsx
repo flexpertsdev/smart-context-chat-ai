@@ -40,13 +40,13 @@ const Card: React.FC<CardProps> = ({
         bg-white rounded-lg border border-gray-200
         ${paddingStyles[padding]}
         ${shadowStyles[shadow]}
-        ${hoverable ? 'hover:shadow-md transition-shadow cursor-pointer' : ''}
+        ${hoverable || onClick ? 'cursor-pointer' : ''}
         ${onClick ? 'w-full text-left' : ''}
         ${className}
       `}
       onClick={onClick}
-      whileHover={hoverable ? { y: -2 } : undefined}
-      whileTap={onClick ? { scale: 0.98 } : undefined}
+      whileHover={undefined}
+      whileTap={onClick ? { scale: 0.995 } : undefined}
     >
       {children}
     </Component>
