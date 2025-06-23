@@ -43,7 +43,7 @@ const NexusInsights: React.FC = () => {
       value: '128',
       change: 12,
       icon: Brain,
-      color: 'blue'
+      color: 'green'
     },
     {
       id: 'insights',
@@ -228,7 +228,7 @@ const NexusInsights: React.FC = () => {
               const Icon = iconMap[insight.type]
               const colorMap = {
                 suggestion: 'yellow',
-                analysis: 'blue',
+                analysis: 'green',
                 warning: 'red',
                 trend: 'green'
               }

@@ -154,7 +154,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
             maxLength={maxLength}
             disabled={disabled}
             rows={1}
-            className="w-full resize-none bg-gray-100 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 max-h-32"
+            className="w-full resize-none bg-gray-100 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500 max-h-32"
           />
           {showEmoji && (
             <button

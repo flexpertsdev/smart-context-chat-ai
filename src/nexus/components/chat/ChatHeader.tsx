@@ -52,7 +52,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
               className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
               <span className="text-white font-medium">
                 {title.substring(0, 2).toUpperCase()}
               </span>

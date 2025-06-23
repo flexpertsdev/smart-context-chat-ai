@@ -14,6 +14,7 @@ interface AdaptiveLayoutProps {
   }
   desktopProps?: {
     showSidebar?: boolean
+    fullHeight?: boolean
   }
 }
 

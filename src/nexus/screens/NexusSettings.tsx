@@ -98,7 +98,7 @@ const NexusSettings: React.FC = () => {
                 <button
                   onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    theme === 'dark' ? 'bg-blue-600' : 'bg-gray-200'
+                    theme === 'dark' ? 'bg-green-600' : 'bg-gray-200'
                   }`}
                 >
                   <span
@@ -118,7 +118,7 @@ const NexusSettings: React.FC = () => {
                 <button
                   onClick={() => setNotifications(!notifications)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    notifications ? 'bg-blue-600' : 'bg-gray-200'
+                    notifications ? 'bg-green-600' : 'bg-gray-200'
                   }`}
                 >
                   <span

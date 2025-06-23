@@ -133,7 +133,7 @@ const NexusProfile: React.FC = () => {
                     className="w-24 h-24 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center">
+                  <div className="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center">
                     <span className="text-white text-2xl font-bold">
                       {displayData.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                     </span>
@@ -159,7 +159,7 @@ const NexusProfile: React.FC = () => {
                     type="text"
                     value={editedData.name}
                     onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
-                    className="text-2xl font-bold w-full bg-transparent border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none"
+                    className="text-2xl font-bold w-full bg-transparent border-b-2 border-gray-300 focus:border-green-500 focus:outline-none"
                   />
                 ) : (
                   <h2 className="text-2xl font-bold">{displayData.name}</h2>
@@ -170,7 +170,7 @@ const NexusProfile: React.FC = () => {
                     type="text"
                     value={editedData.occupation}
                     onChange={(e) => setEditedData({ ...editedData, occupation: e.target.value })}
-                    className="text-gray-600 w-full bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none"
+                    className="text-gray-600 w-full bg-transparent border-b border-gray-300 focus:border-green-500 focus:outline-none"
                     placeholder="Your occupation"
                   />
                 ) : (
@@ -225,7 +225,7 @@ const NexusProfile: React.FC = () => {
                     type="email"
                     value={editedData.email}
                     onChange={(e) => setEditedData({ ...editedData, email: e.target.value })}
-                    className="flex-1 bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none"
+                    className="flex-1 bg-transparent border-b border-gray-300 focus:border-green-500 focus:outline-none"
                   />
                 ) : (
                   <span>{displayData.email}</span>
@@ -240,7 +240,7 @@ const NexusProfile: React.FC = () => {
                     type="tel"
                     value={editedData.phone}
                     onChange={(e) => setEditedData({ ...editedData, phone: e.target.value })}
-                    className="flex-1 bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none"
+                    className="flex-1 bg-transparent border-b border-gray-300 focus:border-green-500 focus:outline-none"
                     placeholder="Phone number"
                   />
                 ) : (
@@ -256,7 +256,7 @@ const NexusProfile: React.FC = () => {
                     type="text"
                     value={editedData.location}
                     onChange={(e) => setEditedData({ ...editedData, location: e.target.value })}
-                    className="flex-1 bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none"
+                    className="flex-1 bg-transparent border-b border-gray-300 focus:border-green-500 focus:outline-none"
                     placeholder="Location"
                   />
                 ) : (
@@ -272,7 +272,7 @@ const NexusProfile: React.FC = () => {
                     type="url"
                     value={editedData.website}
                     onChange={(e) => setEditedData({ ...editedData, website: e.target.value })}
-                    className="flex-1 bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none"
+                    className="flex-1 bg-transparent border-b border-gray-300 focus:border-green-500 focus:outline-none"
                     placeholder="Website URL"
                   />
                 ) : (
@@ -280,7 +280,7 @@ const NexusProfile: React.FC = () => {
                     href={displayData.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+                    className="text-green-600 hover:underline"
                   >
                     {displayData.website}
                   </a>

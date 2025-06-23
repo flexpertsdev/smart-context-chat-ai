@@ -114,7 +114,7 @@ const NexusChatList: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search chats..."
-              className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
         </motion.div>
@@ -143,7 +143,7 @@ const NexusChatList: React.FC = () => {
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-medium truncate">{chat.title}</h3>
                       {chat.unread && (
-                        <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
+                        <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
                       )}
                     </div>
                     <Caption className="line-clamp-1 mb-2">{chat.lastMessage}</Caption>

@@ -92,7 +92,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
                 >
                   <div className="relative">
                     <Icon 
-                      className={`w-6 h-6 ${active ? 'text-blue-600' : 'text-gray-600'}`}
+                      className={`w-6 h-6 ${active ? 'text-green-600' : 'text-gray-600'}`}
                       strokeWidth={active ? 2.5 : 2}
                     />
                     {item.badge && (
@@ -101,7 +101,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
                       </span>
                     )}
                   </div>
-                  <span className={`text-xs mt-1 ${active ? 'text-blue-600' : 'text-gray-600'}`}>
+                  <span className={`text-xs mt-1 ${active ? 'text-green-600' : 'text-gray-600'}`}>
                     {item.label}
                   </span>
                 </button>
@@ -171,7 +171,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
       >
         <div className="flex flex-col h-full py-4">
           <div className="flex items-center justify-center mb-8">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">N</span>
             </div>
           </div>
@@ -186,7 +186,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
                   key={item.id}
                   onClick={() => navigate(item.path)}
                   className={`w-full p-3 rounded-lg relative group ${
-                    active ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-100'
+                    active ? 'bg-green-50 text-green-600' : 'hover:bg-gray-100'
                   }`}
                 >
                   <Icon className="w-6 h-6 mx-auto" />
@@ -207,7 +207,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
             <div className="px-3 pb-4">
               <button
                 onClick={onNewChat}
-                className="w-full p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="w-full p-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
               >
                 <Plus className="w-6 h-6 mx-auto" />
               </button>
@@ -228,7 +228,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
       <div className="flex flex-col h-full">
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">N</span>
             </div>
             <div>
@@ -250,7 +250,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
                   onClick={() => navigate(item.path)}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                     active 
-                      ? 'bg-blue-50 text-blue-600' 
+                      ? 'bg-green-50 text-green-600' 
                       : 'hover:bg-gray-100 text-gray-700'
                   }`}
                 >
@@ -271,7 +271,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
           <div className="p-4 border-t border-gray-200">
             <button
               onClick={onNewChat}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
             >
               <Plus className="w-5 h-5" />
               <span>New Chat</span>

@@ -48,7 +48,7 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
       case 'suggestion':
         return <Lightbulb className="w-5 h-5 text-yellow-500" />
       case 'analysis':
-        return <Brain className="w-5 h-5 text-blue-500" />
+        return <Brain className="w-5 h-5 text-green-500" />
       case 'warning':
         return <AlertCircle className="w-5 h-5 text-red-500" />
       case 'trend':
@@ -82,9 +82,9 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <Brain className="w-5 h-5 text-blue-600" />
+            <Brain className="w-5 h-5 text-green-600" />
             <Heading4>AI Insights</Heading4>
-            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+            <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">
               {insights.length}
             </span>
           </div>

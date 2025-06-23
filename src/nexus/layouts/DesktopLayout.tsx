@@ -6,12 +6,14 @@ interface DesktopLayoutProps {
   children: React.ReactNode
   onNewChat?: () => void
   showSidebar?: boolean
+  fullHeight?: boolean
 }
 
 const DesktopLayout: React.FC<DesktopLayoutProps> = ({
   children,
   onNewChat,
-  showSidebar = true
+  showSidebar = true,
+  fullHeight = false
 }) => {
   return (
     <div className="flex h-screen bg-gray-50">
@@ -20,15 +22,19 @@ const DesktopLayout: React.FC<DesktopLayoutProps> = ({
       )}
       
       <motion.main 
-        className="flex-1 overflow-y-auto"
+        className={`flex-1 ${fullHeight ? 'flex flex-col' : 'overflow-y-auto'}`}
         style={{ marginLeft: showSidebar ? '256px' : '0' }}
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="container mx-auto max-w-6xl p-6">
-          {children}
-        </div>
+        {fullHeight ? (
+          children
+        ) : (
+          <div className="container mx-auto max-w-6xl p-6">
+            {children}
+          </div>
+        )}
       </motion.main>
     </div>
   )

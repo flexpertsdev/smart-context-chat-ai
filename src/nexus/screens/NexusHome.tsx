@@ -55,7 +55,7 @@ const NexusHome: React.FC = () => {
       title: 'Start New Chat',
       description: 'Begin a fresh conversation with AI',
       icon: MessageSquare,
-      color: 'blue',
+      color: 'green',
       action: () => navigate('/nexus/chats/new')
     },
     {
@@ -175,7 +175,7 @@ const NexusHome: React.FC = () => {
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-medium truncate">{chat.title}</h4>
                         {chat.unread && (
-                          <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
+                          <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
                         )}
                       </div>
                       <Caption className="line-clamp-1">{chat.lastMessage}</Caption>
@@ -198,7 +198,7 @@ const NexusHome: React.FC = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/nexus/chats/new')}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-600 md:hidden"
+          className="fixed bottom-6 right-6 w-14 h-14 bg-green-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-green-600 md:hidden"
         >
           <Plus className="w-6 h-6" />
         </motion.button>

@@ -34,7 +34,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
       case 'delivered':
         return <CheckCheck className="w-3 h-3 text-gray-400" />
       case 'read':
-        return <CheckCheck className="w-3 h-3 text-blue-500" />
+        return <CheckCheck className="w-3 h-3 text-green-500" />
       default:
         return null
     }
@@ -57,7 +57,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     >
       <div className={`flex ${isUser ? 'flex-row-reverse' : 'flex-row'} items-end max-w-[70%] gap-2`}>
         {showAvatar && !isUser && !isGrouped && (
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
             <span className="text-white text-sm font-medium">AI</span>
           </div>
         )}
@@ -67,7 +67,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             className={`
               px-4 py-2 rounded-2xl 
               ${isUser 
-                ? 'bg-blue-500 text-white rounded-br-md' 
+                ? 'bg-green-500 text-white rounded-br-md' 
                 : 'bg-white text-gray-900 rounded-bl-md border border-gray-200'
               }
               ${message.isThinking ? 'min-w-[60px]' : ''}

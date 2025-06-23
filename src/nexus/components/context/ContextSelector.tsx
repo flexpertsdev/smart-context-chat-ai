@@ -60,7 +60,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={placeholder}
-              className="w-full pl-10 pr-10 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-10 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             />
             {searchQuery && (
               <button
@@ -96,7 +96,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
                   onClick={() => setSelectedCategory(null)}
                   className={`px-3 py-1 rounded-full text-sm transition-colors ${
                     !selectedCategory
-                      ? 'bg-blue-500 text-white'
+                      ? 'bg-green-500 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -108,7 +108,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
                     onClick={() => setSelectedCategory(category)}
                     className={`px-3 py-1 rounded-full text-sm transition-colors ${
                       selectedCategory === category
-                        ? 'bg-blue-500 text-white'
+                        ? 'bg-green-500 text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
@@ -131,7 +131,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
             {onSelectAll && (
               <button
                 onClick={onSelectAll}
-                className="text-sm text-blue-600 hover:text-blue-700"
+                className="text-sm text-green-600 hover:text-green-700"
                 disabled={!canSelectMore}
               >
                 Select All
@@ -163,7 +163,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
                 disabled={disabled}
                 className={`w-full p-3 rounded-lg border transition-all text-left ${
                   selected
-                    ? 'border-blue-500 bg-blue-50'
+                    ? 'border-green-500 bg-green-50'
                     : disabled
                     ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
                     : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -173,10 +173,10 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <Body className={selected ? 'text-blue-900' : ''}>
+                    <Body className={selected ? 'text-green-900' : ''}>
                       {context.title}
                     </Body>
-                    <Caption className={selected ? 'text-blue-700' : 'text-gray-500'}>
+                    <Caption className={selected ? 'text-green-700' : 'text-gray-500'}>
                       {context.category}
                     </Caption>
                     {context.tags.length > 0 && (
@@ -186,7 +186,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
                             key={index}
                             className={`px-1.5 py-0.5 rounded text-xs ${
                               selected
-                                ? 'bg-blue-100 text-blue-700'
+                                ? 'bg-green-100 text-green-700'
                                 : 'bg-gray-100 text-gray-600'
                             }`}
                           >
@@ -199,7 +199,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
                   
                   <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                     selected
-                      ? 'bg-blue-500 border-blue-500'
+                      ? 'bg-green-500 border-green-500'
                       : 'border-gray-300'
                   }`}>
                     {selected && <Check className="w-3 h-3 text-white" />}

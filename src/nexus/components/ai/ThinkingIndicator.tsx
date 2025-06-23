@@ -21,9 +21,9 @@ const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
         >
-          <Brain className="w-4 h-4 text-blue-500" />
+          <Brain className="w-4 h-4 text-green-500" />
         </motion.div>
-        <Caption className="text-blue-600">{text}</Caption>
+        <Caption className="text-green-600">{text}</Caption>
       </div>
     )
   }
@@ -48,9 +48,9 @@ const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
                 transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
                 className="absolute inset-0"
               >
-                <Sparkles className="w-16 h-16 text-blue-400" />
+                <Sparkles className="w-16 h-16 text-green-400" />
               </motion.div>
-              <Brain className="w-16 h-16 text-blue-600 relative z-10" />
+              <Brain className="w-16 h-16 text-green-600 relative z-10" />
             </div>
             
             <h3 className="text-lg font-semibold mb-2">{text}</h3>
@@ -59,7 +59,7 @@ const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  className="w-2 h-2 bg-blue-500 rounded-full"
+                  className="w-2 h-2 bg-green-500 rounded-full"
                   animate={{ 
                     y: [0, -10, 0],
                     opacity: [0.5, 1, 0.5]
@@ -83,7 +83,7 @@ const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-blue-50 border border-blue-200 rounded-lg p-3"
+      className="bg-green-50 border border-green-200 rounded-lg p-3"
     >
       <div className="flex items-center gap-3">
         {showIcon && (
@@ -93,17 +93,17 @@ const ThinkingIndicator: React.FC<ThinkingIndicatorProps> = ({
               transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
               className="absolute inset-0"
             >
-              <div className="w-8 h-8 rounded-full border-2 border-blue-300 border-t-transparent" />
+              <div className="w-8 h-8 rounded-full border-2 border-green-300 border-t-transparent" />
             </motion.div>
-            <Brain className="w-8 h-8 text-blue-600 relative z-10" />
+            <Brain className="w-8 h-8 text-green-600 relative z-10" />
           </div>
         )}
         
         <div className="flex-1">
-          <p className="text-blue-900 font-medium">{text}</p>
+          <p className="text-green-900 font-medium">{text}</p>
           <div className="flex items-center gap-2 mt-1">
             <motion.div
-              className="h-1 bg-blue-300 rounded-full"
+              className="h-1 bg-green-300 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
               transition={{ duration: 2, repeat: Infinity }}

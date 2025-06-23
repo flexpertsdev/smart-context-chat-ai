@@ -151,7 +151,7 @@ const NexusContextDetails: React.FC = () => {
                   type="text"
                   value={editedContext?.title || ''}
                   onChange={(e) => setEditedContext(prev => prev ? {...prev, title: e.target.value} : null)}
-                  className="text-3xl font-bold w-full bg-transparent border-b-2 border-blue-500 focus:outline-none"
+                  className="text-3xl font-bold w-full bg-transparent border-b-2 border-green-500 focus:outline-none"
                 />
               ) : (
                 <Heading1>{displayContext.title}</Heading1>
@@ -250,11 +250,11 @@ const NexusContextDetails: React.FC = () => {
                     onChange={(e) => setNewTag(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
                     placeholder="Add tag..."
-                    className="px-3 py-1 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-1 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                   <button
                     onClick={handleAddTag}
-                    className="text-blue-600 hover:text-blue-700"
+                    className="text-green-600 hover:text-green-700"
                   >
                     Add
                   </button>

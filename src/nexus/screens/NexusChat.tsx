@@ -87,7 +87,8 @@ const NexusChat: React.FC = () => {
         showBottomNav: false 
       }}
       desktopProps={{
-        showSidebar: true
+        showSidebar: true,
+        fullHeight: true
       }}
     >
       <div className="flex h-full">
@@ -172,7 +173,7 @@ const NexusChat: React.FC = () => {
                   return context ? (
                     <span
                       key={contextId}
-                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm flex-shrink-0"
+                      className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm flex-shrink-0"
                     >
                       {context.title}
                     </span>
@@ -180,7 +181,7 @@ const NexusChat: React.FC = () => {
                 })}
                 <button
                   onClick={() => setShowContextSelector(true)}
-                  className="text-blue-600 hover:text-blue-700 text-sm flex-shrink-0"
+                  className="text-green-600 hover:text-green-700 text-sm flex-shrink-0"
                 >
                   Edit
                 </button>
