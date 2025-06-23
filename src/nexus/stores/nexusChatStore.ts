@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { nexusAnthropicClient, NexusMessage, NexusContext } from '../services/anthropicClient'
+import { NexusStorageService } from '../services/nexusStorageService'
 
 interface Chat {
   id: string
@@ -38,6 +39,9 @@ interface NexusChatStore {
   // Settings
   setApiKey: (apiKey: string) => void
   getApiKey: () => string | null
+  
+  // Data persistence
+  loadFromStorage: () => Promise<void>
 }
 
 export const useNexusChatStore = create<NexusChatStore>()(
@@ -47,24 +51,7 @@ export const useNexusChatStore = create<NexusChatStore>()(
       chats: [],
       activeChat: null,
       messages: {},
-      contexts: [
-        {
-          id: '1',
-          title: 'React Best Practices',
-          description: 'Guidelines for writing clean and maintainable React code',
-          content: 'Use functional components with hooks. Avoid inline styles. Keep components small and focused.',
-          category: 'Development',
-          tags: ['react', 'frontend', 'best-practices']
-        },
-        {
-          id: '2',
-          title: 'TypeScript Guidelines',
-          description: 'Best practices for TypeScript development',
-          content: 'Use strict mode. Define interfaces for all data structures. Avoid using any type.',
-          category: 'Development',
-          tags: ['typescript', 'types', 'best-practices']
-        }
-      ],
+      contexts: [],
       selectedContextIds: [],
       isThinking: false,
       error: null,
@@ -82,6 +69,9 @@ export const useNexusChatStore = create<NexusChatStore>()(
           chats: [newChat, ...state.chats],
           activeChat: newChat
         }))
+
+        // Save to IndexedDB
+        NexusStorageService.saveChat(newChat).catch(console.error)
 
         return newChat
       },
@@ -106,6 +96,8 @@ export const useNexusChatStore = create<NexusChatStore>()(
             chats: [chat!, ...state.chats],
             activeChat: chat
           }))
+          // Save new chat to IndexedDB
+          NexusStorageService.saveChat(chat!).catch(console.error)
         } else {
           set({ activeChat: chat })
         }
@@ -146,6 +138,9 @@ export const useNexusChatStore = create<NexusChatStore>()(
             [activeChat.id]: [...(state.messages[activeChat.id] || []), userMessage]
           }
         }))
+        
+        // Save to IndexedDB
+        await NexusStorageService.saveMessage(userMessage, activeChat.id)
 
         // Update message status
         setTimeout(() => {
@@ -210,30 +205,43 @@ export const useNexusChatStore = create<NexusChatStore>()(
           const thinking = await stream.return(undefined)
           
           // Update final message with thinking data
+          const finalAiMessage = {
+            ...aiMessage,
+            content: fullContent,
+            status: 'delivered' as const,
+            thinking: thinking?.value
+          }
+          
           set(state => ({
             messages: {
               ...state.messages,
               [activeChat.id]: state.messages[activeChat.id].map(msg =>
                 msg.id === aiMessageId 
-                  ? { ...msg, status: 'delivered', thinking: thinking?.value }
+                  ? finalAiMessage
                   : msg
               )
             },
             isThinking: false
           }))
+          
+          // Save final AI message to IndexedDB
+          await NexusStorageService.saveMessage(finalAiMessage, activeChat.id)
 
           // Update chat's last message and activity
+          const updatedChat = {
+            ...activeChat,
+            lastMessage: finalAiMessage,
+            lastActivity: new Date()
+          }
+          
           set(state => ({
             chats: state.chats.map(chat =>
-              chat.id === activeChat.id
-                ? { 
-                    ...chat, 
-                    lastMessage: { ...aiMessage, content: fullContent, status: 'delivered' },
-                    lastActivity: new Date()
-                  }
-                : chat
+              chat.id === activeChat.id ? updatedChat : chat
             )
           }))
+          
+          // Save updated chat to IndexedDB
+          await NexusStorageService.saveChat(updatedChat)
 
         } catch (error) {
           console.error('Failed to send message:', error)
@@ -278,6 +286,8 @@ export const useNexusChatStore = create<NexusChatStore>()(
         set(state => ({
           contexts: [...state.contexts, context]
         }))
+        // Save to IndexedDB
+        NexusStorageService.saveContext(context).catch(console.error)
       },
 
       updateContext: (contextId, updates) => {
@@ -286,6 +296,8 @@ export const useNexusChatStore = create<NexusChatStore>()(
             ctx.id === contextId ? { ...ctx, ...updates } : ctx
           )
         }))
+        // Update in IndexedDB
+        NexusStorageService.updateContext(contextId, updates).catch(console.error)
       },
 
       deleteContext: (contextId) => {
@@ -293,6 +305,8 @@ export const useNexusChatStore = create<NexusChatStore>()(
           contexts: state.contexts.filter(ctx => ctx.id !== contextId),
           selectedContextIds: state.selectedContextIds.filter(id => id !== contextId)
         }))
+        // Delete from IndexedDB
+        NexusStorageService.deleteContext(contextId).catch(console.error)
       },
 
       // Settings
@@ -302,6 +316,32 @@ export const useNexusChatStore = create<NexusChatStore>()(
 
       getApiKey: () => {
         return nexusAnthropicClient.getApiKey()
+      },
+
+      // Load data from IndexedDB
+      loadFromStorage: async () => {
+        try {
+          // Load chats
+          const chats = await NexusStorageService.loadChats()
+          
+          // Load contexts
+          const contexts = await NexusStorageService.loadContexts()
+          
+          // Load messages for each chat
+          const messages: Record<string, NexusMessage[]> = {}
+          for (const chat of chats) {
+            messages[chat.id] = await NexusStorageService.loadMessages(chat.id)
+          }
+          
+          set({
+            chats,
+            contexts,
+            messages
+          })
+        } catch (error) {
+          console.error('Failed to load from storage:', error)
+          set({ error: 'Failed to load data from storage' })
+        }
       }
     }),
     {

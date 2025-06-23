@@ -10,10 +10,12 @@ import NexusInsights from './screens/NexusInsights'
 import NexusSettings from './screens/NexusSettings'
 import NexusProfile from './screens/NexusProfile'
 import NexusShowcase from './NexusShowcase'
+import DataLoader from './components/DataLoader'
 
 const NexusApp: React.FC = () => {
   return (
-    <Routes>
+    <DataLoader>
+      <Routes>
       <Route path="/" element={<NexusHome />} />
       <Route path="/showcase" element={<NexusShowcase />} />
       <Route path="/chats" element={<NexusChatList />} />
@@ -28,6 +30,7 @@ const NexusApp: React.FC = () => {
       <Route path="/profile" element={<NexusProfile />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </DataLoader>
   )
 }
 
