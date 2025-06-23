@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Smartphone, Monitor } from 'lucide-react'
+import { Smartphone, Monitor, Sparkles } from 'lucide-react'
 
 const UISelector: React.FC = () => {
   const navigate = useNavigate()
@@ -66,6 +66,29 @@ const UISelector: React.FC = () => {
               </p>
               <span className="inline-block mt-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
                 Original
+              </span>
+            </div>
+          </motion.button>
+
+          {/* Nexus UI Option */}
+          <motion.button
+            onClick={() => navigate('/nexus')}
+            className="w-full bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow flex items-center gap-4 border-2 border-transparent hover:border-purple-500"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-8 h-8 text-purple-600" />
+            </div>
+            <div className="text-left">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Nexus Experience
+              </h3>
+              <p className="text-sm text-gray-600 mt-1">
+                Next-gen adaptive UI system built from scratch
+              </p>
+              <span className="inline-block mt-2 text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
+                Preview
               </span>
             </div>
           </motion.button>
