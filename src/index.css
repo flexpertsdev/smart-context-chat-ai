@@ -67,6 +67,19 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Prevent body scroll on mobile for better app-like experience */
+  html, body {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+  
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
 }
 
 /* Safe area utilities for mobile devices */
@@ -96,6 +109,25 @@
   .mobile-viewport {
     height: 100vh;
     height: 100dvh; /* Dynamic viewport height */
+  }
+  
+  /* Mobile-specific fixes */
+  @media (max-width: 768px) {
+    /* Prevent rubber-band scrolling */
+    .overscroll-contain {
+      overscroll-behavior: contain;
+    }
+    
+    /* Fix for iOS Safari */
+    .h-screen {
+      height: 100vh;
+      height: -webkit-fill-available;
+    }
+    
+    .min-h-screen {
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+    }
   }
   
   /* Touch target for accessibility */
