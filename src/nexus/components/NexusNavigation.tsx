@@ -46,10 +46,8 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
     return (
       <>
         {/* Mobile Header Bar */}
-        <motion.header 
+        <header 
           className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40"
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
           style={{
             paddingTop: 'env(safe-area-inset-top, 0px)'
           }}
@@ -68,13 +66,11 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
               </button>
             </div>
           </div>
-        </motion.header>
+        </header>
 
         {/* Mobile Bottom Nav */}
-        <motion.nav 
+        <nav 
           className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40"
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
           style={{
             paddingBottom: 'env(safe-area-inset-bottom, 0px)'
           }}
@@ -108,7 +104,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
               )
             })}
           </div>
-        </motion.nav>
+        </nav>
 
         {/* Mobile Menu Overlay */}
         <AnimatePresence>
@@ -164,10 +160,8 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
   // Tablet Side Navigation
   if (variant === 'tablet') {
     return (
-      <motion.nav 
+      <nav 
         className="fixed left-0 top-0 bottom-0 w-20 bg-white border-r border-gray-200 z-30"
-        initial={{ x: -100 }}
-        animate={{ x: 0 }}
       >
         <div className="flex flex-col h-full py-4">
           <div className="flex items-center justify-center mb-8">
@@ -214,16 +208,14 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
             </div>
           )}
         </div>
-      </motion.nav>
+      </nav>
     )
   }
 
   // Desktop Sidebar Navigation
   return (
-    <motion.nav 
+    <nav 
       className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-gray-200 z-30"
-      initial={{ x: -100 }}
-      animate={{ x: 0 }}
     >
       <div className="flex flex-col h-full">
         <div className="p-4 border-b border-gray-200">
@@ -279,7 +271,7 @@ const NexusNavigation: React.FC<NexusNavigationProps> = ({ variant, onNewChat })
           </div>
         )}
       </div>
-    </motion.nav>
+    </nav>
   )
 }
 

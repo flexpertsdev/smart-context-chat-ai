@@ -167,9 +167,6 @@ const NexusHome: React.FC = () => {
 
         {/* Floating Action Button */}
         <motion.button
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => navigate('/nexus/chats/new')}
