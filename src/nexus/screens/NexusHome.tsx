@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Plus, MessageSquare, Clock, TrendingUp } from 'lucide-react'
+import { Plus, MessageSquare, Clock, TrendingUp, LogIn } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import Card from '../foundations/Card'
 import Button from '../foundations/Button'
@@ -50,6 +50,14 @@ const NexusHome: React.FC = () => {
       icon: TrendingUp,
       color: 'green',
       action: () => navigate('/nexus/insights')
+    },
+    {
+      id: 'signin',
+      title: 'Sign In',
+      description: 'Access your account (demo)',
+      icon: LogIn,
+      color: 'blue',
+      action: () => navigate('/nexus/login')
     }
   ]
 
@@ -77,7 +85,7 @@ const NexusHome: React.FC = () => {
         {/* Quick Actions */}
         <div className="mb-8">
           <Heading3 className="mb-4">Quick Actions</Heading3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {quickActions.map((action) => {
               const Icon = action.icon
               return (

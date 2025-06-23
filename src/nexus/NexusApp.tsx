@@ -11,6 +11,8 @@ import NexusSettings from './screens/NexusSettings'
 import NexusProfile from './screens/NexusProfile'
 import NexusShowcase from './NexusShowcase'
 import DataLoader from './components/DataLoader'
+import NexusLogin from './screens/NexusLogin'
+import NexusSignup from './screens/NexusSignup'
 
 const NexusApp: React.FC = () => {
   return (
@@ -18,6 +20,8 @@ const NexusApp: React.FC = () => {
       <Routes>
       <Route path="/" element={<NexusHome />} />
       <Route path="/showcase" element={<NexusShowcase />} />
+      <Route path="/login" element={<NexusLogin />} />
+      <Route path="/signup" element={<NexusSignup />} />
       <Route path="/chats" element={<NexusChatList />} />
       <Route path="/chats/new" element={<NexusChat />} />
       <Route path="/chats/:chatId" element={<NexusChat />} />
