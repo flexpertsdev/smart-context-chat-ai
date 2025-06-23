@@ -101,7 +101,7 @@ const NexusChat: React.FC = () => {
           />
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-6 bg-gray-50"
+          <div className="flex-1 overflow-y-auto px-4 py-6 bg-gray-50">
             {messages.length === 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
