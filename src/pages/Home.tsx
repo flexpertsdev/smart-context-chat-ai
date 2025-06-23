@@ -37,20 +37,11 @@ const Home = () => {
     isOpen: false,
     chatId: null
   })
-  const [hasNavigatedToFirstChat, setHasNavigatedToFirstChat] = useState(false)
 
   useEffect(() => {
     loadChatsFromStorage()
   }, [loadChatsFromStorage])
 
-  // Reset navigation flag when component mounts (user manually navigates to home)
-  useEffect(() => {
-    // Only reset if user manually navigated to home (not on initial load)
-    const currentPath = window.location.pathname
-    if (currentPath === '/' && hasNavigatedToFirstChat) {
-      setHasNavigatedToFirstChat(false)
-    }
-  }, [])
 
   // Handle first-time user redirect to onboarding
   useEffect(() => {
@@ -60,22 +51,7 @@ const Home = () => {
     }
   }, [isFirstTime, hasCompletedOnboarding, navigate])
 
-  // Handle navigation to first chat after onboarding completion (simplified)
-  useEffect(() => {
-    if (hasCompletedOnboarding && firstChatId && !hasNavigatedToFirstChat && chats.length > 0) {
-      // Give chats time to load, then navigate
-      const timer = setTimeout(() => {
-        const firstChat = chats.find(chat => chat.id === firstChatId)
-        if (firstChat && !hasNavigatedToFirstChat) {
-          setHasNavigatedToFirstChat(true)
-          // Use replace to avoid adding to browser history and prevent back button issues
-          navigate(`/chat/${firstChatId}`, { replace: true })
-        }
-      }, 500) // Small delay to allow chats to load
-      
-      return () => clearTimeout(timer)
-    }
-  }, [hasCompletedOnboarding, firstChatId, hasNavigatedToFirstChat, chats, navigate])
+  // Removed auto-navigation to first chat - users should choose when to enter a chat
 
   const filteredChats = useMemo(() => {
     let filtered = chats

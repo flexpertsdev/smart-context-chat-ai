@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Edit3, Share2, Download, Trash2, Eye, EyeOff } from 'lucide-react'
 import { useContextStore } from '../stores/contextStore'
+import AdaptiveLayout from '../components/layout/AdaptiveLayout'
 
 const ContextDetails = () => {
   const { contextId } = useParams<{ contextId: string }>()
@@ -15,17 +16,19 @@ const ContextDetails = () => {
 
   if (!context) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-500">Context not found</p>
-          <button
-            onClick={() => navigate('/contexts')}
-            className="mt-4 text-green-600 hover:text-green-700"
-          >
-            Back to Library
-          </button>
+      <AdaptiveLayout>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-500">Context not found</p>
+            <button
+              onClick={() => navigate('/contexts')}
+              className="mt-4 text-green-600 hover:text-green-700"
+            >
+              Back to Library
+            </button>
+          </div>
         </div>
-      </div>
+      </AdaptiveLayout>
     )
   }
 
@@ -41,8 +44,9 @@ const ContextDetails = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-gray-50">
-      {/* Header */}
+    <AdaptiveLayout>
+      <div className="flex-1 flex flex-col bg-gray-50">
+      {/* Context Header Info */}
       <motion.div
         className="bg-white border-b border-gray-200 px-4 py-4"
         initial={{ opacity: 0, y: -20 }}
@@ -201,6 +205,7 @@ const ContextDetails = () => {
         </motion.div>
       </div>
     </div>
+    </AdaptiveLayout>
   )
 }
 

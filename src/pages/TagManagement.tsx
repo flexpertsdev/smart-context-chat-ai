@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Plus, X, Edit3, Trash2, Hash } from 'lucide-react'
 import { useChatStore } from '../stores/chatStore'
 import { Badge } from '../components/ui/badge'
+import AdaptiveLayout from '../components/layout/AdaptiveLayout'
 
 const TagManagement = () => {
   const { 
@@ -45,7 +46,8 @@ const TagManagement = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-gray-50">
+    <AdaptiveLayout>
+      <div className="flex-1 flex flex-col bg-gray-50">
       <div className="flex-1 overflow-y-auto p-4">
         <motion.div
           className="max-w-2xl mx-auto"
@@ -176,6 +178,7 @@ const TagManagement = () => {
         </motion.div>
       </div>
     </div>
+    </AdaptiveLayout>
   )
 }
 
