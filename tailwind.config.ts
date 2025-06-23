@@ -111,9 +111,6 @@ export default {
 				}
 			},
 			
-			fontFamily: {
-				sans: ['var(--font-sans)', 'system-ui', '-apple-system', 'sans-serif'],
-			},
 			
 			fontSize: {
 				'touch': ['1.125rem', { lineHeight: '1.75rem' }],
