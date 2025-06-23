@@ -9,7 +9,7 @@ import ThinkingDrawer from '../components/ai/ThinkingDrawer'
 import ContextSelector from '../components/context/ContextSelector'
 import ContextBottomSheet from '../components/context/ContextBottomSheet'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Library, ChevronRight, AlertCircle } from 'lucide-react'
+import { Library, ChevronRight, AlertCircle, CheckCircle, Sparkles } from 'lucide-react'
 import Button from '../foundations/Button'
 import { useNexusChatStore } from '../stores/nexusChatStore'
 import { NexusMessage } from '../services/anthropicClient'
@@ -20,6 +20,8 @@ const NexusChat: React.FC = () => {
   const [showContextSelector, setShowContextSelector] = useState(false)
   const [showThinkingDrawer, setShowThinkingDrawer] = useState(false)
   const [selectedMessage, setSelectedMessage] = useState<NexusMessage | null>(null)
+  const [selectionMode, setSelectionMode] = useState(false)
+  const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Get store state and actions
@@ -77,6 +79,23 @@ const NexusChat: React.FC = () => {
     )
   }
 
+  const toggleMessageSelection = (messageId: string) => {
+    setSelectedMessageIds(prev =>
+      prev.includes(messageId)
+        ? prev.filter(id => id !== messageId)
+        : [...prev, messageId]
+    )
+  }
+
+  const handleGenerateContext = () => {
+    const selectedMessages = chatMessages.filter(msg => 
+      selectedMessageIds.includes(msg.id)
+    )
+    navigate('/nexus/contexts/generate', { 
+      state: { messages: selectedMessages } 
+    })
+  }
+
   return (
     <AdaptiveLayout 
       mobileProps={{ 
@@ -94,9 +113,51 @@ const NexusChat: React.FC = () => {
         <div className="flex-1 flex flex-col h-full">
           <ChatHeader
             title={activeChat?.title || 'New Chat'}
-            subtitle={selectedContextIds.length > 0 ? `${selectedContextIds.length} contexts selected` : 'No contexts selected'}
+            subtitle={
+              selectionMode 
+                ? `${selectedMessageIds.length} messages selected`
+                : selectedContextIds.length > 0 
+                  ? `${selectedContextIds.length} contexts selected` 
+                  : 'No contexts selected'
+            }
             onBack={() => window.history.back()}
             onMenuClick={() => setShowContextSelector(!showContextSelector)}
+            actions={
+              <div className="flex items-center gap-2">
+                {selectionMode ? (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setSelectionMode(false)
+                        setSelectedMessageIds([])
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon={<Sparkles className="w-4 h-4" />}
+                      onClick={handleGenerateContext}
+                      disabled={selectedMessageIds.length === 0}
+                    >
+                      Generate Context
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSelectionMode(true)}
+                    disabled={chatMessages.length === 0}
+                  >
+                    Select
+                  </Button>
+                )}
+              </div>
+            }
           />
 
           {/* Messages */}
@@ -159,16 +220,40 @@ const NexusChat: React.FC = () => {
 
             <div className="space-y-4">
               {chatMessages.map((message) => (
-                <MessageBubble
-                  key={message.id}
-                  message={message}
-                  showAvatar={true}
-                  isGrouped={false}
-                  onClick={message.thinking ? () => {
-                    setSelectedMessage(message)
-                    setShowThinkingDrawer(true)
-                  } : undefined}
-                />
+                <div key={message.id} className="relative">
+                  {selectionMode && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8">
+                      <button
+                        onClick={() => toggleMessageSelection(message.id)}
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                          selectedMessageIds.includes(message.id)
+                            ? 'bg-green-500 border-green-500'
+                            : 'bg-white border-gray-300 hover:border-gray-400'
+                        }`}
+                      >
+                        {selectedMessageIds.includes(message.id) && (
+                          <CheckCircle className="w-4 h-4 text-white" />
+                        )}
+                      </button>
+                    </div>
+                  )}
+                  <MessageBubble
+                    message={message}
+                    showAvatar={true}
+                    isGrouped={false}
+                    onClick={
+                      selectionMode 
+                        ? () => toggleMessageSelection(message.id)
+                        : message.thinking 
+                          ? () => {
+                              setSelectedMessage(message)
+                              setShowThinkingDrawer(true)
+                            }
+                          : undefined
+                    }
+                    className={selectionMode ? 'cursor-pointer' : ''}
+                  />
+                </div>
               ))}
               
               <AnimatePresence>

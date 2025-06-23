@@ -14,6 +14,7 @@ interface ChatHeaderProps {
   onSearchClick?: () => void
   showActions?: boolean
   isOnline?: boolean
+  actions?: React.ReactNode
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({
@@ -26,7 +27,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   onVideoClick,
   onSearchClick,
   showActions = true,
-  isOnline = false
+  isOnline = false,
+  actions
 }) => {
   return (
     <motion.header
@@ -72,39 +74,44 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           </div>
         </div>
         
-        {showActions && (
+        {(showActions || actions) && (
           <div className="flex items-center gap-1">
-            {onSearchClick && (
-              <button
-                onClick={onSearchClick}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Search className="w-5 h-5 text-gray-600" />
-              </button>
-            )}
-            {onVideoClick && (
-              <button
-                onClick={onVideoClick}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Video className="w-5 h-5 text-gray-600" />
-              </button>
-            )}
-            {onCallClick && (
-              <button
-                onClick={onCallClick}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Phone className="w-5 h-5 text-gray-600" />
-              </button>
-            )}
-            {onMenuClick && (
-              <button
-                onClick={onMenuClick}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <MoreVertical className="w-5 h-5 text-gray-600" />
-              </button>
+            {actions}
+            {showActions && (
+              <>
+                {onSearchClick && (
+                  <button
+                    onClick={onSearchClick}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <Search className="w-5 h-5 text-gray-600" />
+                  </button>
+                )}
+                {onVideoClick && (
+                  <button
+                    onClick={onVideoClick}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <Video className="w-5 h-5 text-gray-600" />
+                  </button>
+                )}
+                {onCallClick && (
+                  <button
+                    onClick={onCallClick}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <Phone className="w-5 h-5 text-gray-600" />
+                  </button>
+                )}
+                {onMenuClick && (
+                  <button
+                    onClick={onMenuClick}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <MoreVertical className="w-5 h-5 text-gray-600" />
+                  </button>
+                )}
+              </>
             )}
           </div>
         )}

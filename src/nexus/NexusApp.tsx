@@ -5,6 +5,7 @@ import NexusChat from './screens/NexusChat'
 import NexusChatList from './screens/NexusChatList'
 import NexusContexts from './screens/NexusContexts'
 import NexusContextDetails from './screens/NexusContextDetails'
+import NexusContextGeneration from './screens/NexusContextGeneration'
 import NexusInsights from './screens/NexusInsights'
 import NexusSettings from './screens/NexusSettings'
 import NexusProfile from './screens/NexusProfile'
@@ -19,7 +20,8 @@ const NexusApp: React.FC = () => {
       <Route path="/chats/new" element={<NexusChat />} />
       <Route path="/chats/:chatId" element={<NexusChat />} />
       <Route path="/contexts" element={<NexusContexts />} />
-      <Route path="/contexts/new" element={<div>Create Context</div>} />
+      <Route path="/contexts/new" element={<NexusContextGeneration />} />
+      <Route path="/contexts/generate" element={<NexusContextGeneration />} />
       <Route path="/contexts/:contextId" element={<NexusContextDetails />} />
       <Route path="/insights" element={<NexusInsights />} />
       <Route path="/settings" element={<NexusSettings />} />
