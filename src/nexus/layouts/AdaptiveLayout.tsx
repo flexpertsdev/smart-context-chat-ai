@@ -11,6 +11,7 @@ interface AdaptiveLayoutProps {
     showBottomNav?: boolean
     headerTitle?: string
     onBack?: () => void
+    fullHeight?: boolean
   }
   desktopProps?: {
     showSidebar?: boolean

@@ -84,7 +84,8 @@ const NexusChat: React.FC = () => {
     <AdaptiveLayout 
       mobileProps={{ 
         showHeader: false, 
-        showBottomNav: false 
+        showBottomNav: false,
+        fullHeight: true
       }}
       desktopProps={{
         showSidebar: true,

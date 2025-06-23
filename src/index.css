@@ -69,16 +69,28 @@
   }
   
   /* Prevent body scroll on mobile for better app-like experience */
-  html, body {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
+  html {
     height: 100%;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
   }
   
   #root {
     height: 100%;
     overflow: hidden;
+  }
+  
+  /* Only use fixed positioning on iOS to prevent bounce scroll */
+  @supports (-webkit-touch-callout: none) {
+    body {
+      position: fixed;
+      width: 100%;
+    }
   }
 }
 
