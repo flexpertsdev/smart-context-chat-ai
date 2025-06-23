@@ -93,8 +93,8 @@ const NexusChat: React.FC = () => {
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col h-full">
           <ChatHeader
-            title={chatId === 'new' ? 'New Chat' : 'AI Assistant'}
-            subtitle={selectedContexts.length > 0 ? `${selectedContexts.length} contexts selected` : 'No contexts selected'}
+            title={activeChat?.title || 'New Chat'}
+            subtitle={selectedContextIds.length > 0 ? `${selectedContextIds.length} contexts selected` : 'No contexts selected'}
             onBack={() => window.history.back()}
             onMenuClick={() => setShowContextSelector(!showContextSelector)}
           />
