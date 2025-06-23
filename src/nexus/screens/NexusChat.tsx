@@ -22,6 +22,7 @@ const NexusChat: React.FC = () => {
   const [selectedMessage, setSelectedMessage] = useState<NexusMessage | null>(null)
   const [selectionMode, setSelectionMode] = useState(false)
   const [selectedMessageIds, setSelectedMessageIds] = useState<string[]>([])
+  const [isInitializing, setIsInitializing] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Get store state and actions
@@ -41,6 +42,7 @@ const NexusChat: React.FC = () => {
 
   // Initialize chat
   useEffect(() => {
+    setIsInitializing(true)
     if (chatId === 'new') {
       // Create a new chat
       const newChat = createNewChat()
@@ -48,8 +50,10 @@ const NexusChat: React.FC = () => {
     } else if (chatId) {
       // Set existing chat as active
       setActiveChat(chatId)
+      // Give state time to update
+      setTimeout(() => setIsInitializing(false), 100)
     }
-  }, [chatId]) // Remove dependencies to prevent infinite loops
+  }, [chatId, createNewChat, navigate, setActiveChat])
 
   // Get messages for current chat
   const chatMessages = activeChat ? (messages[activeChat.id] || []) : []
@@ -60,11 +64,25 @@ const NexusChat: React.FC = () => {
   }, [chatMessages, isThinking])
 
   const handleSendMessage = async (content: string) => {
+    // Prevent sending while initializing
+    if (isInitializing) {
+      return
+    }
+
     // Check if API key is configured
     if (!getApiKey()) {
       navigate('/nexus/settings', { 
         state: { message: 'Please set your Anthropic API key to start chatting' } 
       })
+      return
+    }
+
+    // Ensure we have an active chat
+    if (!activeChat && chatId && chatId !== 'new') {
+      // Try to set the active chat again
+      setActiveChat(chatId)
+      // Give it a moment to update
+      setTimeout(() => sendMessage(content), 100)
       return
     }
 
@@ -162,7 +180,14 @@ const NexusChat: React.FC = () => {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-gray-50">
-            {chatMessages.length === 0 && (
+            {isInitializing ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Initializing chat...</p>
+                </div>
+              </div>
+            ) : chatMessages.length === 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -313,8 +338,8 @@ const NexusChat: React.FC = () => {
           {/* Message Composer */}
           <MessageComposer
             onSendMessage={handleSendMessage}
-            placeholder="Type your message..."
-            disabled={isThinking}
+            placeholder={isInitializing ? "Initializing chat..." : "Type your message..."}
+            disabled={isThinking || isInitializing}
           />
         </div>
 

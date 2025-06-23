@@ -65,6 +65,8 @@ export const useNexusChatStore = create<NexusChatStore>()(
           contextIds: get().selectedContextIds
         }
 
+        console.log('Creating new chat:', newChat)
+
         set(state => ({
           chats: [newChat, ...state.chats],
           activeChat: newChat
@@ -82,10 +84,13 @@ export const useNexusChatStore = create<NexusChatStore>()(
           return
         }
         
+        console.log('Setting active chat:', chatId)
+        
         let chat = get().chats.find(c => c.id === chatId)
         
         // If chat doesn't exist, create it
         if (!chat) {
+          console.log('Chat not found, creating new one:', chatId)
           chat = {
             id: chatId,
             title: `Chat ${new Date().toLocaleDateString()}`,
@@ -99,6 +104,7 @@ export const useNexusChatStore = create<NexusChatStore>()(
           // Save new chat to IndexedDB
           NexusStorageService.saveChat(chat!).catch(console.error)
         } else {
+          console.log('Found existing chat:', chat)
           set({ activeChat: chat })
         }
       },
@@ -118,7 +124,11 @@ export const useNexusChatStore = create<NexusChatStore>()(
       sendMessage: async (content) => {
         const { activeChat, selectedContextIds, contexts } = get()
         if (!activeChat) {
-          set({ error: 'No active chat' })
+          console.error('No active chat when trying to send message', { 
+            activeChat, 
+            chats: get().chats 
+          })
+          set({ error: 'No active chat. Please refresh the page and try again.' })
           return
         }
 
