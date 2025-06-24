@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNexusChatStore } from '../stores/nexusChatStore'
 import { StorageMigration } from '../utils/storageMigration'
+import { clearNexusApiKey } from '../utils/clearApiKey'
 
 const DataLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const initialize = useNexusChatStore(state => state.initialize)
@@ -14,6 +15,15 @@ const DataLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         
         // Then initialize data from IndexedDB
         await initialize()
+        
+        // Make clearApiKey available in console for debugging
+        if (typeof window !== 'undefined') {
+          (window as any).clearNexusApiKey = () => {
+            clearNexusApiKey()
+            window.location.reload()
+          }
+          console.log('💡 If you\'re having API issues, run clearNexusApiKey() in the console')
+        }
       } catch (error) {
         console.error('Failed to load data:', error)
       } finally {

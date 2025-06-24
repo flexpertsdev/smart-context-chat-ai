@@ -1,6 +1,7 @@
 import { supabaseAnthropicService, StructuredAIResponse } from '../../services/supabaseAnthropicService'
 import { anthropicService } from '../../services/anthropicService'
 import { Context as AppContext } from '../../types'
+import { clearNexusApiKey } from '../utils/clearApiKey'
 
 export interface NexusMessage {
   id: string
@@ -145,16 +146,33 @@ class NexusAnthropicClient {
 
     try {
       // Get structured response from appropriate service
-      const response = this.useDirectApi 
-        ? await anthropicService.getStructuredResponse(appMessages, appContexts)
-        : await supabaseAnthropicService.getStructuredResponse(appMessages, appContexts)
+      let response: StructuredAIResponse
+      
+      if (this.useDirectApi) {
+        try {
+          response = await anthropicService.getStructuredResponse(appMessages, appContexts)
+        } catch (directApiError) {
+          console.error('Direct API failed, falling back to Supabase:', directApiError)
+          // Store error for debugging
+          if (typeof sessionStorage !== 'undefined') {
+            sessionStorage.setItem('nexus-last-api-error', String(directApiError))
+          }
+          // Fall back to Supabase if direct API fails
+          response = await supabaseAnthropicService.getStructuredResponse(appMessages, appContexts)
+        }
+      } else {
+        response = await supabaseAnthropicService.getStructuredResponse(appMessages, appContexts)
+      }
       
       return {
         content: response.response,
         thinking: this.convertToNexusThinking(response)
       }
     } catch (error) {
-      console.error('Failed to get Anthropic response:', error)
+      console.error('Failed to get AI response:', error)
+      if (error instanceof Error && error.message.includes('CORS')) {
+        throw new Error('Direct API access is not supported in the browser. Please remove your API key to use Supabase Edge Functions.')
+      }
       throw error
     }
   }
@@ -182,9 +200,33 @@ class NexusAnthropicClient {
 
     try {
       // Stream the response from appropriate service
-      const stream = this.useDirectApi
-        ? anthropicService.streamChatCompletion(appMessages, appContexts)
-        : supabaseAnthropicService.streamChatCompletion(appMessages, appContexts)
+      let stream: AsyncGenerator<string, void, unknown>
+      let service: typeof anthropicService | typeof supabaseAnthropicService
+      
+      if (this.useDirectApi) {
+        try {
+          stream = anthropicService.streamChatCompletion(appMessages, appContexts)
+          service = anthropicService
+          // Test if we can get the first chunk
+          const firstChunkResult = await stream.next()
+          if (firstChunkResult.done) {
+            throw new Error('Stream ended unexpectedly')
+          }
+          // Create a new generator that yields the first chunk and then the rest
+          stream = (async function* () {
+            yield firstChunkResult.value
+            yield* stream
+          })()
+        } catch (directApiError) {
+          console.error('Direct API streaming failed, falling back to Supabase:', directApiError)
+          // Fall back to Supabase if direct API fails
+          stream = supabaseAnthropicService.streamChatCompletion(appMessages, appContexts)
+          service = supabaseAnthropicService
+        }
+      } else {
+        stream = supabaseAnthropicService.streamChatCompletion(appMessages, appContexts)
+        service = supabaseAnthropicService
+      }
       
       let fullContent = ''
       for await (const chunk of stream) {
@@ -193,9 +235,7 @@ class NexusAnthropicClient {
       }
 
       // Get the thinking data from appropriate service
-      const thinkingData = this.useDirectApi
-        ? anthropicService.getLastThinkingData()
-        : supabaseAnthropicService.getLastThinkingData()
+      const thinkingData = service.getLastThinkingData()
       if (thinkingData) {
         return this.convertToNexusThinking({ 
           response: fullContent, 
@@ -203,7 +243,10 @@ class NexusAnthropicClient {
         })
       }
     } catch (error) {
-      console.error('Failed to stream Anthropic response:', error)
+      console.error('Failed to stream response:', error)
+      if (error instanceof TypeError && this.useDirectApi) {
+        throw new Error('Direct API access failed. This usually means CORS is blocking browser requests. Please clear your API key in settings to use Supabase Edge Functions instead.')
+      }
       throw error
     }
   }
