@@ -36,13 +36,20 @@ export class SupabaseAnthropicService {
   private supabaseAnonKey: string
 
   constructor() {
-    // Updated with actual Supabase URL and anon key
-    this.supabaseUrl = 'https://ajrcdmxznlhyervttmea.supabase.co'
-    this.supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqcmNkbXh6bmxoeWVydnR0bWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5MjE3ODIsImV4cCI6MjA2NDQ5Nzc4Mn0.JcLDDl2zd0LqEX0HJRAauwLziPgfUqsn4UVwxpnHIYk'
+    // Get Supabase credentials from environment variables
+    this.supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+    this.supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+    
+    // Fallback for demo purposes (should be removed in production)
+    if (!this.supabaseUrl || !this.supabaseAnonKey) {
+      console.warn('⚠️ Supabase credentials not found in environment variables')
+      console.warn('Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY')
+    }
     
     console.log('🔧 Supabase service initialized:', {
       hasUrl: !!this.supabaseUrl,
-      hasKey: !!this.supabaseAnonKey
+      hasKey: !!this.supabaseAnonKey,
+      url: this.supabaseUrl ? this.supabaseUrl.substring(0, 20) + '...' : 'not set'
     })
   }
 

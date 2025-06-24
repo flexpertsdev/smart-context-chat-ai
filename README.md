@@ -32,9 +32,30 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Copy the environment variables file and configure it
+cp .env.example .env
+# Edit .env with your Supabase credentials
+
+# Step 5: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
+
+## Environment Variables
+
+This project requires the following environment variables:
+
+- `VITE_SUPABASE_URL`: Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+
+You can get these from your Supabase project dashboard.
+
+## Deployment to Netlify
+
+When deploying to Netlify, make sure to:
+
+1. Set the environment variables in Netlify's dashboard
+2. Go to Site Settings > Environment Variables
+3. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
 
 **Edit a file directly in GitHub**
 
