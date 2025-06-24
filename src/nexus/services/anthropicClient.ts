@@ -1,7 +1,5 @@
 import { netlifyAnthropicService, StructuredAIResponse } from '../../services/netlifyAnthropicService'
-import { anthropicService } from '../../services/anthropicService'
 import { Context as AppContext } from '../../types'
-import { clearNexusApiKey } from '../utils/clearApiKey'
 
 export interface NexusMessage {
   id: string
@@ -49,58 +47,25 @@ export interface NexusContext {
 }
 
 class NexusAnthropicClient {
-  private useDirectApi: boolean = false
-  
   private isConfigured(): boolean {
-    // If using direct API, check for API key
-    if (this.useDirectApi) {
-      return !!anthropicService.getApiKey()
-    }
-    // Supabase service is always configured
+    // Netlify Functions are always available
     return true
   }
 
   setApiKey(apiKey: string) {
-    if (apiKey && apiKey.trim()) {
-      // Store the API key but don't use direct API in browser
-      localStorage.setItem('nexus-api-key', apiKey)
-      // For now, always use Supabase to avoid CORS issues
-      this.useDirectApi = false
-      console.log('API key saved, but using Supabase Edge Functions to avoid CORS issues.')
-    } else {
-      // If no API key, use Supabase
-      this.useDirectApi = false
-      localStorage.removeItem('nexus-use-direct-api')
-      localStorage.removeItem('nexus-api-key')
-    }
+    // API keys are handled by Netlify Functions on the server
+    console.log('Note: API keys are managed by Netlify Functions.')
   }
 
   getApiKey(): string | null {
-    // Check localStorage for saved API key
-    const savedKey = localStorage.getItem('nexus-api-key')
-    if (savedKey) {
-      this.useDirectApi = true
-      anthropicService.setApiKey(savedKey)
-      return savedKey
-    }
+    // No API keys in browser
     return null
   }
   
   constructor() {
-    // Initialize from localStorage
-    const savedKey = localStorage.getItem('nexus-api-key')
-    const useDirectApi = localStorage.getItem('nexus-use-direct-api') === 'true'
-    
-    if (savedKey && useDirectApi) {
-      // Temporarily disable direct API to force Supabase usage
-      // This prevents CORS errors in the browser
-      console.log('Note: Direct API is disabled in browser. Using Supabase Edge Functions.')
-      this.useDirectApi = false
-      
-      // Uncomment below to re-enable direct API (for non-browser environments)
-      // this.useDirectApi = true
-      // anthropicService.setApiKey(savedKey)
-    }
+    // Clean up any old localStorage items
+    localStorage.removeItem('nexus-api-key')
+    localStorage.removeItem('nexus-use-direct-api')
   }
 
   private convertToAppContext(nexusContext: NexusContext): AppContext {
@@ -132,11 +97,7 @@ class NexusAnthropicClient {
     messages: NexusMessage[],
     contexts: NexusContext[] = []
   ): Promise<{ content: string; thinking: NexusThinking }> {
-    if (!this.isConfigured()) {
-      throw new Error('Anthropic API key not configured. Please set your API key in settings.')
-    }
-
-    // Convert Nexus messages to the format expected by anthropicService
+    // Convert Nexus messages to the format expected by netlifyAnthropicService
     const appMessages = messages.map(msg => ({
       id: msg.id,
       chatId: 'nexus-chat',
@@ -150,24 +111,8 @@ class NexusAnthropicClient {
     const appContexts = contexts.map(ctx => this.convertToAppContext(ctx))
 
     try {
-      // Get structured response from appropriate service
-      let response: StructuredAIResponse
-      
-      if (this.useDirectApi) {
-        try {
-          response = await anthropicService.getStructuredResponse(appMessages, appContexts)
-        } catch (directApiError) {
-          console.error('Direct API failed, falling back to Supabase:', directApiError)
-          // Store error for debugging
-          if (typeof sessionStorage !== 'undefined') {
-            sessionStorage.setItem('nexus-last-api-error', String(directApiError))
-          }
-          // Fall back to Netlify function if direct API fails
-          response = await netlifyAnthropicService.getStructuredResponse(appMessages, appContexts)
-        }
-      } else {
-        response = await netlifyAnthropicService.getStructuredResponse(appMessages, appContexts)
-      }
+      // Get structured response from Netlify Functions
+      const response = await netlifyAnthropicService.getStructuredResponse(appMessages, appContexts)
       
       return {
         content: response.response,
@@ -175,9 +120,6 @@ class NexusAnthropicClient {
       }
     } catch (error) {
       console.error('Failed to get AI response:', error)
-      if (error instanceof Error && error.message.includes('CORS')) {
-        throw new Error('Direct API access is not supported in the browser. Please remove your API key to use Supabase Edge Functions.')
-      }
       throw error
     }
   }
@@ -186,11 +128,7 @@ class NexusAnthropicClient {
     messages: NexusMessage[],
     contexts: NexusContext[] = []
   ): AsyncGenerator<string, NexusThinking | undefined, unknown> {
-    if (!this.isConfigured()) {
-      throw new Error('Anthropic API key not configured. Please set your API key in settings.')
-    }
-
-    // Convert Nexus messages to the format expected by anthropicService
+    // Convert Nexus messages to the format expected by netlifyAnthropicService
     const appMessages = messages.map(msg => ({
       id: msg.id,
       chatId: 'nexus-chat',
@@ -204,34 +142,8 @@ class NexusAnthropicClient {
     const appContexts = contexts.map(ctx => this.convertToAppContext(ctx))
 
     try {
-      // Stream the response from appropriate service
-      let stream: AsyncGenerator<string, void, unknown>
-      let service: typeof anthropicService | typeof netlifyAnthropicService
-      
-      if (this.useDirectApi) {
-        try {
-          stream = anthropicService.streamChatCompletion(appMessages, appContexts)
-          service = anthropicService
-          // Test if we can get the first chunk
-          const firstChunkResult = await stream.next()
-          if (firstChunkResult.done) {
-            throw new Error('Stream ended unexpectedly')
-          }
-          // Create a new generator that yields the first chunk and then the rest
-          stream = (async function* () {
-            yield firstChunkResult.value
-            yield* stream
-          })()
-        } catch (directApiError) {
-          console.error('Direct API streaming failed, falling back to Netlify:', directApiError)
-          // Fall back to Netlify if direct API fails
-          stream = netlifyAnthropicService.streamChatCompletion(appMessages, appContexts)
-          service = netlifyAnthropicService
-        }
-      } else {
-        stream = netlifyAnthropicService.streamChatCompletion(appMessages, appContexts)
-        service = netlifyAnthropicService
-      }
+      // Stream the response from Netlify Functions
+      const stream = netlifyAnthropicService.streamChatCompletion(appMessages, appContexts)
       
       let fullContent = ''
       for await (const chunk of stream) {
@@ -239,8 +151,8 @@ class NexusAnthropicClient {
         yield chunk
       }
 
-      // Get the thinking data from appropriate service
-      const thinkingData = service.getLastThinkingData()
+      // Get the thinking data from Netlify service
+      const thinkingData = netlifyAnthropicService.getLastThinkingData()
       if (thinkingData) {
         return this.convertToNexusThinking({ 
           response: fullContent, 
@@ -249,9 +161,6 @@ class NexusAnthropicClient {
       }
     } catch (error) {
       console.error('Failed to stream response:', error)
-      if (error instanceof TypeError && this.useDirectApi) {
-        throw new Error('Direct API access failed. This usually means CORS is blocking browser requests. Please clear your API key in settings to use Supabase Edge Functions instead.')
-      }
       throw error
     }
   }

@@ -1,27 +1,56 @@
 import { Handler } from '@netlify/functions'
 import Anthropic from '@anthropic-ai/sdk'
 
+const apiKey = process.env.ANTHROPIC_API_KEY
+
+if (!apiKey) {
+  console.error('ANTHROPIC_API_KEY environment variable is not set')
+}
+
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
+  apiKey: apiKey || 'dummy-key-for-initialization',
 })
 
 export const handler: Handler = async (event) => {
-  // Only allow POST requests
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Method not allowed' }),
-    }
-  }
-
   // Enable CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Content-Type': 'application/json',
   }
 
+  // Handle CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers,
+      body: '',
+    }
+  }
+
+  // Only allow POST requests
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    }
+  }
+
   try {
+    // Check for API key before processing request
+    if (!apiKey) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Anthropic API key not configured',
+          details: 'Please set ANTHROPIC_API_KEY environment variable in Netlify dashboard'
+        }),
+      }
+    }
+
     const { messages, contexts } = JSON.parse(event.body || '{}')
 
     if (!messages || !Array.isArray(messages)) {
