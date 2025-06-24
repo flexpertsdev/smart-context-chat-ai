@@ -1,4 +1,4 @@
-import { anthropicService, StructuredAIResponse } from '../../services/anthropicService'
+import { supabaseAnthropicService, StructuredAIResponse } from '../../services/supabaseAnthropicService'
 import { Context as AppContext } from '../../types'
 
 export interface NexusMessage {
@@ -48,15 +48,18 @@ export interface NexusContext {
 
 class NexusAnthropicClient {
   private isConfigured(): boolean {
-    return !!anthropicService.getApiKey()
+    // Supabase service is always configured with hardcoded credentials
+    return true
   }
 
   setApiKey(apiKey: string) {
-    anthropicService.setApiKey(apiKey)
+    // No-op for Supabase service as it uses its own authentication
+    console.log('API key setting not required for Supabase service')
   }
 
   getApiKey(): string | null {
-    return anthropicService.getApiKey()
+    // Return null as Supabase doesn't use user API keys
+    return null
   }
 
   private convertToAppContext(nexusContext: NexusContext): AppContext {
@@ -106,8 +109,8 @@ class NexusAnthropicClient {
     const appContexts = contexts.map(ctx => this.convertToAppContext(ctx))
 
     try {
-      // Get structured response from Anthropic
-      const response = await anthropicService.getStructuredResponse(appMessages, appContexts)
+      // Get structured response from Supabase Edge Function
+      const response = await supabaseAnthropicService.getStructuredResponse(appMessages, appContexts)
       
       return {
         content: response.response,
@@ -141,8 +144,8 @@ class NexusAnthropicClient {
     const appContexts = contexts.map(ctx => this.convertToAppContext(ctx))
 
     try {
-      // Stream the response
-      const stream = anthropicService.streamChatCompletion(appMessages, appContexts)
+      // Stream the response from Supabase Edge Function
+      const stream = supabaseAnthropicService.streamChatCompletion(appMessages, appContexts)
       
       let fullContent = ''
       for await (const chunk of stream) {
@@ -150,8 +153,8 @@ class NexusAnthropicClient {
         yield chunk
       }
 
-      // Get the thinking data that was stored
-      const thinkingData = anthropicService.getLastThinkingData()
+      // Get the thinking data that was stored by Supabase service
+      const thinkingData = supabaseAnthropicService.getLastThinkingData()
       if (thinkingData) {
         return this.convertToNexusThinking({ 
           response: fullContent, 
