@@ -118,7 +118,7 @@ const NexusSettings: React.FC = () => {
               <div>
                 <Heading3>Anthropic API Key</Heading3>
                 <Caption>
-                  {apiKeyValue ? 'Using direct Anthropic API' : 'Using Supabase Edge Functions (default)'}
+                  {apiKeyValue ? 'Using direct Anthropic API' : 'Using Netlify Functions (default)'}
                 </Caption>
               </div>
             </div>
@@ -167,7 +167,7 @@ const NexusSettings: React.FC = () => {
                     // Update location state to show saved message
                     navigate('.', { 
                       replace: true, 
-                      state: { message: apiKeyValue ? 'API key saved! Using direct API.' : 'API key removed. Using Supabase.' } 
+                      state: { message: apiKeyValue ? 'API key saved! Using direct API.' : 'API key removed. Using Netlify Functions.' } 
                     })
                   }}
                   disabled={!apiKeyValue.trim()}
@@ -183,7 +183,7 @@ const NexusSettings: React.FC = () => {
                       setShowMessage(true)
                       navigate('.', { 
                         replace: true, 
-                        state: { message: 'API key removed. Using Supabase Edge Functions.' } 
+                        state: { message: 'API key removed. Using Netlify Functions.' } 
                       })
                     }}
                   >

@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { Chat, Message, Context, AIThinking, Assumption, Uncertainty, ReasoningStep } from '../types'
 import { StorageService } from '../services/storageService'
-import { supabaseAnthropicService } from '../services/supabaseAnthropicService'
+import { netlifyAnthropicService } from '../services/netlifyAnthropicService'
 
 interface ChatStore {
   chats: Chat[]
@@ -119,7 +119,7 @@ export const useChatStore = create<ChatStore>()(
               allMessageIds: get().messages[chatId]?.map(m => m.id) || []
             })
             
-            const structuredResponse = await supabaseAnthropicService.getStructuredResponse(chatMessages, contexts)
+            const structuredResponse = await netlifyAnthropicService.getStructuredResponse(chatMessages, contexts)
             
             console.log('🔍 Message state after API call:', {
               totalMessages: get().messages[chatId]?.length || 0,

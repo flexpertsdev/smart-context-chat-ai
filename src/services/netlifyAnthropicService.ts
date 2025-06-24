@@ -1,4 +1,3 @@
-
 import { Context, Message } from '../types'
 
 export interface StructuredAIResponse {
@@ -31,42 +30,15 @@ export interface StructuredAIResponse {
   }
 }
 
-export class SupabaseAnthropicService {
-  private supabaseUrl: string
-  private supabaseAnonKey: string
-
-  constructor() {
-    // Get Supabase credentials from environment variables
-    this.supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
-    this.supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-    
-    // Fallback for demo purposes (should be removed in production)
-    if (!this.supabaseUrl || !this.supabaseAnonKey) {
-      console.warn('⚠️ Supabase credentials not found in environment variables')
-      console.warn('Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY')
-    }
-    
-    console.log('🔧 Supabase service initialized:', {
-      hasUrl: !!this.supabaseUrl,
-      hasKey: !!this.supabaseAnonKey,
-      url: this.supabaseUrl ? this.supabaseUrl.substring(0, 20) + '...' : 'not set'
-    })
-  }
-
+export class NetlifyAnthropicService {
   async getStructuredResponse(
     messages: Message[],
     contexts: Context[] = []
   ): Promise<StructuredAIResponse> {
-    console.log('🚀 Getting structured response from Supabase Anthropic function', {
+    console.log('🚀 Getting structured response from Netlify function', {
       messageCount: messages.length,
       contextCount: contexts.length
     })
-
-    if (!this.supabaseUrl || !this.supabaseAnonKey || 
-        this.supabaseUrl === 'https://your-project.supabase.co' || 
-        this.supabaseAnonKey === 'your-anon-key-here') {
-      throw new Error('Supabase configuration missing. Please update supabaseAnthropicService.ts with your Supabase URL and anon key')
-    }
 
     const requestPayload = {
       messages: messages.map(msg => ({
@@ -88,16 +60,11 @@ export class SupabaseAnthropicService {
       }))
     }
 
-    console.log('📤 Sending request to Supabase function:', {
-      url: `${this.supabaseUrl}/functions/v1/anthropic-chat`,
-      messageCount: requestPayload.messages.length,
-      contextCount: requestPayload.contexts.length
-    })
+    console.log('📤 Sending request to Netlify function')
 
-    const response = await fetch(`${this.supabaseUrl}/functions/v1/anthropic-chat`, {
+    const response = await fetch('/.netlify/functions/anthropic-chat', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.supabaseAnonKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestPayload),
@@ -105,21 +72,12 @@ export class SupabaseAnthropicService {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('❌ Supabase function error:', errorText)
-      throw new Error(`Supabase function error: ${response.status} - ${errorText}`)
+      console.error('❌ Netlify function error:', errorText)
+      throw new Error(`Netlify function error: ${response.status} - ${errorText}`)
     }
 
     const data = await response.json()
-    console.log('✅ Supabase function response received')
-    console.log('📝 Raw response data:', {
-      hasResponse: 'response' in data,
-      hasThinking: 'thinking' in data,
-      hasError: 'error' in data,
-      responseType: typeof data.response,
-      responseLength: data.response?.length,
-      responsePreview: data.response?.substring(0, 100),
-      fullData: data
-    })
+    console.log('✅ Netlify function response received')
 
     // Handle error responses from the function
     if (data.error) {
@@ -157,7 +115,7 @@ export class SupabaseAnthropicService {
     messages: Message[],
     contexts: Context[] = []
   ): AsyncGenerator<string, void, unknown> {
-    console.log('🌊 Starting simulated streaming from Supabase function')
+    console.log('🌊 Starting simulated streaming from Netlify function')
 
     try {
       const structuredResponse = await this.getStructuredResponse(messages, contexts)
@@ -170,7 +128,7 @@ export class SupabaseAnthropicService {
         await new Promise(resolve => setTimeout(resolve, 10))
       }
       
-      // Store the thinking data for later retrieval - Fixed: access thinking as property, not function
+      // Store the thinking data for later retrieval
       if (typeof window !== 'undefined') {
         // Ensure the thinking data matches our expected structure
         const thinkingData = {
@@ -187,7 +145,7 @@ export class SupabaseAnthropicService {
       }
       
     } catch (error) {
-      console.error('❌ Error in Supabase function streaming:', error)
+      console.error('❌ Error in Netlify function streaming:', error)
       throw error
     }
   }
@@ -207,4 +165,4 @@ export class SupabaseAnthropicService {
   }
 }
 
-export const supabaseAnthropicService = new SupabaseAnthropicService()
+export const netlifyAnthropicService = new NetlifyAnthropicService()

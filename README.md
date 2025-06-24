@@ -42,20 +42,28 @@ npm run dev
 
 ## Environment Variables
 
-This project requires the following environment variables:
+This project uses Netlify Functions to securely call the Anthropic API.
 
-- `VITE_SUPABASE_URL`: Your Supabase project URL
-- `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+### Required for Netlify deployment:
+- `ANTHROPIC_API_KEY`: Your Anthropic API key (used by Netlify Functions)
 
-You can get these from your Supabase project dashboard.
+### Optional for local development:
+- `VITE_ANTHROPIC_API_KEY`: For direct API usage (not recommended due to CORS)
 
 ## Deployment to Netlify
 
-When deploying to Netlify, make sure to:
+When deploying to Netlify:
 
 1. Set the environment variables in Netlify's dashboard
 2. Go to Site Settings > Environment Variables
-3. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+3. Add `ANTHROPIC_API_KEY` with your Anthropic API key
+4. The app will automatically use Netlify Functions to call the Anthropic API
+
+## How it works
+
+- The app uses Netlify Functions as a backend proxy to call the Anthropic API
+- This avoids CORS issues and keeps your API key secure
+- No additional backend services (like Supabase) are required
 
 **Edit a file directly in GitHub**
 

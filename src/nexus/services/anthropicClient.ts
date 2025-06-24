@@ -1,4 +1,4 @@
-import { supabaseAnthropicService, StructuredAIResponse } from '../../services/supabaseAnthropicService'
+import { netlifyAnthropicService, StructuredAIResponse } from '../../services/netlifyAnthropicService'
 import { anthropicService } from '../../services/anthropicService'
 import { Context as AppContext } from '../../types'
 import { clearNexusApiKey } from '../utils/clearApiKey'
@@ -162,11 +162,11 @@ class NexusAnthropicClient {
           if (typeof sessionStorage !== 'undefined') {
             sessionStorage.setItem('nexus-last-api-error', String(directApiError))
           }
-          // Fall back to Supabase if direct API fails
-          response = await supabaseAnthropicService.getStructuredResponse(appMessages, appContexts)
+          // Fall back to Netlify function if direct API fails
+          response = await netlifyAnthropicService.getStructuredResponse(appMessages, appContexts)
         }
       } else {
-        response = await supabaseAnthropicService.getStructuredResponse(appMessages, appContexts)
+        response = await netlifyAnthropicService.getStructuredResponse(appMessages, appContexts)
       }
       
       return {
@@ -206,7 +206,7 @@ class NexusAnthropicClient {
     try {
       // Stream the response from appropriate service
       let stream: AsyncGenerator<string, void, unknown>
-      let service: typeof anthropicService | typeof supabaseAnthropicService
+      let service: typeof anthropicService | typeof netlifyAnthropicService
       
       if (this.useDirectApi) {
         try {
@@ -223,14 +223,14 @@ class NexusAnthropicClient {
             yield* stream
           })()
         } catch (directApiError) {
-          console.error('Direct API streaming failed, falling back to Supabase:', directApiError)
-          // Fall back to Supabase if direct API fails
-          stream = supabaseAnthropicService.streamChatCompletion(appMessages, appContexts)
-          service = supabaseAnthropicService
+          console.error('Direct API streaming failed, falling back to Netlify:', directApiError)
+          // Fall back to Netlify if direct API fails
+          stream = netlifyAnthropicService.streamChatCompletion(appMessages, appContexts)
+          service = netlifyAnthropicService
         }
       } else {
-        stream = supabaseAnthropicService.streamChatCompletion(appMessages, appContexts)
-        service = supabaseAnthropicService
+        stream = netlifyAnthropicService.streamChatCompletion(appMessages, appContexts)
+        service = netlifyAnthropicService
       }
       
       let fullContent = ''
