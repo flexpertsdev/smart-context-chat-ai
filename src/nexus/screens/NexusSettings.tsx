@@ -117,7 +117,9 @@ const NexusSettings: React.FC = () => {
               </div>
               <div>
                 <Heading3>Anthropic API Key</Heading3>
-                <Caption>Required for AI chat functionality</Caption>
+                <Caption>
+                  {apiKeyValue ? 'Using direct Anthropic API' : 'Using Supabase Edge Functions (default)'}
+                </Caption>
               </div>
             </div>
             
@@ -155,22 +157,40 @@ const NexusSettings: React.FC = () => {
                 </Caption>
               </div>
               
-              <Button
-                variant="primary"
-                fullWidth
-                onClick={() => {
-                  setApiKey(apiKeyValue)
-                  setShowMessage(true)
-                  // Update location state to show saved message
-                  navigate('.', { 
-                    replace: true, 
-                    state: { message: 'API key saved successfully!' } 
-                  })
-                }}
-                disabled={!apiKeyValue.trim()}
-              >
-                Save API Key
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="primary"
+                  fullWidth
+                  onClick={() => {
+                    setApiKey(apiKeyValue)
+                    setShowMessage(true)
+                    // Update location state to show saved message
+                    navigate('.', { 
+                      replace: true, 
+                      state: { message: apiKeyValue ? 'API key saved! Using direct API.' : 'API key removed. Using Supabase.' } 
+                    })
+                  }}
+                  disabled={!apiKeyValue.trim()}
+                >
+                  Save API Key
+                </Button>
+                {apiKeyValue && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setApiKeyValue('')
+                      setApiKey('')
+                      setShowMessage(true)
+                      navigate('.', { 
+                        replace: true, 
+                        state: { message: 'API key removed. Using Supabase Edge Functions.' } 
+                      })
+                    }}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
             </div>
           </Card>
         </div>

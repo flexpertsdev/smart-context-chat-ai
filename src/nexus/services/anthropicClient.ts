@@ -1,4 +1,5 @@
 import { supabaseAnthropicService, StructuredAIResponse } from '../../services/supabaseAnthropicService'
+import { anthropicService } from '../../services/anthropicService'
 import { Context as AppContext } from '../../types'
 
 export interface NexusMessage {
@@ -47,19 +48,53 @@ export interface NexusContext {
 }
 
 class NexusAnthropicClient {
+  private useDirectApi: boolean = false
+  
   private isConfigured(): boolean {
-    // Supabase service is always configured with hardcoded credentials
+    // If using direct API, check for API key
+    if (this.useDirectApi) {
+      return !!anthropicService.getApiKey()
+    }
+    // Supabase service is always configured
     return true
   }
 
   setApiKey(apiKey: string) {
-    // No-op for Supabase service as it uses its own authentication
-    console.log('API key setting not required for Supabase service')
+    if (apiKey && apiKey.trim()) {
+      // If an API key is provided, switch to direct API mode
+      this.useDirectApi = true
+      anthropicService.setApiKey(apiKey)
+      // Store preference in localStorage
+      localStorage.setItem('nexus-use-direct-api', 'true')
+      localStorage.setItem('nexus-api-key', apiKey)
+    } else {
+      // If no API key, use Supabase
+      this.useDirectApi = false
+      localStorage.removeItem('nexus-use-direct-api')
+      localStorage.removeItem('nexus-api-key')
+    }
   }
 
   getApiKey(): string | null {
-    // Return null as Supabase doesn't use user API keys
+    // Check localStorage for saved API key
+    const savedKey = localStorage.getItem('nexus-api-key')
+    if (savedKey) {
+      this.useDirectApi = true
+      anthropicService.setApiKey(savedKey)
+      return savedKey
+    }
     return null
+  }
+  
+  constructor() {
+    // Initialize from localStorage
+    const savedKey = localStorage.getItem('nexus-api-key')
+    const useDirectApi = localStorage.getItem('nexus-use-direct-api') === 'true'
+    
+    if (savedKey && useDirectApi) {
+      this.useDirectApi = true
+      anthropicService.setApiKey(savedKey)
+    }
   }
 
   private convertToAppContext(nexusContext: NexusContext): AppContext {
@@ -109,8 +144,10 @@ class NexusAnthropicClient {
     const appContexts = contexts.map(ctx => this.convertToAppContext(ctx))
 
     try {
-      // Get structured response from Supabase Edge Function
-      const response = await supabaseAnthropicService.getStructuredResponse(appMessages, appContexts)
+      // Get structured response from appropriate service
+      const response = this.useDirectApi 
+        ? await anthropicService.getStructuredResponse(appMessages, appContexts)
+        : await supabaseAnthropicService.getStructuredResponse(appMessages, appContexts)
       
       return {
         content: response.response,
@@ -144,8 +181,10 @@ class NexusAnthropicClient {
     const appContexts = contexts.map(ctx => this.convertToAppContext(ctx))
 
     try {
-      // Stream the response from Supabase Edge Function
-      const stream = supabaseAnthropicService.streamChatCompletion(appMessages, appContexts)
+      // Stream the response from appropriate service
+      const stream = this.useDirectApi
+        ? anthropicService.streamChatCompletion(appMessages, appContexts)
+        : supabaseAnthropicService.streamChatCompletion(appMessages, appContexts)
       
       let fullContent = ''
       for await (const chunk of stream) {
@@ -153,8 +192,10 @@ class NexusAnthropicClient {
         yield chunk
       }
 
-      // Get the thinking data that was stored by Supabase service
-      const thinkingData = supabaseAnthropicService.getLastThinkingData()
+      // Get the thinking data from appropriate service
+      const thinkingData = this.useDirectApi
+        ? anthropicService.getLastThinkingData()
+        : supabaseAnthropicService.getLastThinkingData()
       if (thinkingData) {
         return this.convertToNexusThinking({ 
           response: fullContent, 
