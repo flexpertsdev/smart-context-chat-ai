@@ -62,12 +62,11 @@ class NexusAnthropicClient {
 
   setApiKey(apiKey: string) {
     if (apiKey && apiKey.trim()) {
-      // If an API key is provided, switch to direct API mode
-      this.useDirectApi = true
-      anthropicService.setApiKey(apiKey)
-      // Store preference in localStorage
-      localStorage.setItem('nexus-use-direct-api', 'true')
+      // Store the API key but don't use direct API in browser
       localStorage.setItem('nexus-api-key', apiKey)
+      // For now, always use Supabase to avoid CORS issues
+      this.useDirectApi = false
+      console.log('API key saved, but using Supabase Edge Functions to avoid CORS issues.')
     } else {
       // If no API key, use Supabase
       this.useDirectApi = false
@@ -93,8 +92,14 @@ class NexusAnthropicClient {
     const useDirectApi = localStorage.getItem('nexus-use-direct-api') === 'true'
     
     if (savedKey && useDirectApi) {
-      this.useDirectApi = true
-      anthropicService.setApiKey(savedKey)
+      // Temporarily disable direct API to force Supabase usage
+      // This prevents CORS errors in the browser
+      console.log('Note: Direct API is disabled in browser. Using Supabase Edge Functions.')
+      this.useDirectApi = false
+      
+      // Uncomment below to re-enable direct API (for non-browser environments)
+      // this.useDirectApi = true
+      // anthropicService.setApiKey(savedKey)
     }
   }
 
