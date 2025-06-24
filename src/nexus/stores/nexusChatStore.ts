@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import { nexusAnthropicClient, NexusMessage, NexusContext } from '../services/anthropicClient'
 import { NexusStorageService } from '../services/nexusStorageService'
 
@@ -40,13 +39,11 @@ interface NexusChatStore {
   setApiKey: (apiKey: string) => void
   getApiKey: () => string | null
   
-  // Data persistence
-  loadFromStorage: () => Promise<void>
+  // Data initialization
+  initialize: () => Promise<void>
 }
 
-export const useNexusChatStore = create<NexusChatStore>()(
-  persist(
-    (set, get) => ({
+export const useNexusChatStore = create<NexusChatStore>()((set, get) => ({
       // Initial state
       chats: [],
       activeChat: null,
@@ -328,16 +325,18 @@ export const useNexusChatStore = create<NexusChatStore>()(
         return nexusAnthropicClient.getApiKey()
       },
 
-      // Load data from IndexedDB
-      loadFromStorage: async () => {
+      // Initialize from IndexedDB
+      initialize: async () => {
         try {
+          console.log('Initializing from IndexedDB...')
+          
           // Load chats
           const chats = await NexusStorageService.loadChats()
           
           // Load contexts
           const contexts = await NexusStorageService.loadContexts()
           
-          // Load messages for each chat
+          // Load messages for each chat (only recent ones for performance)
           const messages: Record<string, NexusMessage[]> = {}
           for (const chat of chats) {
             messages[chat.id] = await NexusStorageService.loadMessages(chat.id)
@@ -348,19 +347,15 @@ export const useNexusChatStore = create<NexusChatStore>()(
             contexts,
             messages
           })
+          
+          console.log('Loaded from IndexedDB:', { 
+            chatCount: chats.length, 
+            contextCount: contexts.length 
+          })
         } catch (error) {
-          console.error('Failed to load from storage:', error)
+          console.error('Failed to initialize from IndexedDB:', error)
           set({ error: 'Failed to load data from storage' })
         }
       }
-    }),
-    {
-      name: 'nexus-chat-store',
-      partialize: (state) => ({
-        chats: state.chats,
-        contexts: state.contexts,
-        selectedContextIds: state.selectedContextIds
-      })
-    }
-  )
+    })
 )
