@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, Bell, Shield, Palette, Globe, HelpCircle, LogOut, ChevronRight, Key, Eye, EyeOff } from 'lucide-react'
+import { User, Bell, Shield, Palette, Globe, HelpCircle, LogOut, ChevronRight, Key, Check } from 'lucide-react'
 import AdaptiveLayout from '../layouts/AdaptiveLayout'
 import Card from '../foundations/Card'
 import Button from '../foundations/Button'
@@ -19,11 +19,8 @@ interface SettingSection {
 const NexusSettings: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { getApiKey, setApiKey } = useNexusChatStore()
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [notifications, setNotifications] = useState(true)
-  const [apiKeyValue, setApiKeyValue] = useState('')
-  const [showApiKey, setShowApiKey] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
 
   // Show message from navigation state
@@ -34,13 +31,6 @@ const NexusSettings: React.FC = () => {
     }
   }, [location.state])
 
-  // Load existing API key
-  useEffect(() => {
-    const existingKey = getApiKey()
-    if (existingKey) {
-      setApiKeyValue(existingKey)
-    }
-  }, [])
 
   const settingSections: SettingSection[] = [
     {
@@ -108,7 +98,7 @@ const NexusSettings: React.FC = () => {
           </motion.div>
         )}
 
-        {/* API Key Section */}
+        {/* AI Service Info */}
         <div className="mb-8">
           <Card padding="lg">
             <div className="flex items-center gap-3 mb-4">
@@ -116,80 +106,35 @@ const NexusSettings: React.FC = () => {
                 <Key className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <Heading3>Anthropic API Key</Heading3>
+                <Heading3>AI Service</Heading3>
                 <Caption>
-                  {apiKeyValue ? 'Using direct Anthropic API' : 'Using Netlify Functions (default)'}
+                  Powered by Claude via secure server-side functions
                 </Caption>
               </div>
             </div>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  API Key
-                </label>
-                <div className="relative">
-                  <input
-                    type={showApiKey ? 'text' : 'password'}
-                    value={apiKeyValue}
-                    onChange={(e) => setApiKeyValue(e.target.value)}
-                    placeholder="sk-ant-api03-..."
-                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="w-3 h-3 text-white" />
+                  </div>
+                  <div>
+                    <Body className="font-medium text-green-900">No API key needed</Body>
+                    <Caption className="text-green-700 mt-1">
+                      This app uses secure server-side functions to communicate with Claude. 
+                      Your conversations are processed safely without exposing any API keys in the browser.
+                    </Caption>
+                  </div>
                 </div>
-                <Caption className="mt-2">
-                  Get your API key from{' '}
-                  <a
-                    href="https://console.anthropic.com/settings/keys"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-600 hover:text-green-700 underline"
-                  >
-                    Anthropic Console
-                  </a>
-                </Caption>
               </div>
               
-              <div className="flex gap-2">
-                <Button
-                  variant="primary"
-                  fullWidth
-                  onClick={() => {
-                    setApiKey(apiKeyValue)
-                    setShowMessage(true)
-                    // Update location state to show saved message
-                    navigate('.', { 
-                      replace: true, 
-                      state: { message: apiKeyValue ? 'API key saved! Using direct API.' : 'API key removed. Using Netlify Functions.' } 
-                    })
-                  }}
-                  disabled={!apiKeyValue.trim()}
-                >
-                  Save API Key
-                </Button>
-                {apiKeyValue && (
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setApiKeyValue('')
-                      setApiKey('')
-                      setShowMessage(true)
-                      navigate('.', { 
-                        replace: true, 
-                        state: { message: 'API key removed. Using Netlify Functions.' } 
-                      })
-                    }}
-                  >
-                    Clear
-                  </Button>
-                )}
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <Caption className="text-gray-600">
+                  <strong>How it works:</strong> All AI requests are securely routed through Netlify Functions, 
+                  which handle the authentication with Anthropic's API. This ensures your data remains private 
+                  and secure.
+                </Caption>
               </div>
             </div>
           </Card>

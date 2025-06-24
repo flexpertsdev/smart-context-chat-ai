@@ -316,15 +316,6 @@ export const useNexusChatStore = create<NexusChatStore>()((set, get) => ({
         NexusStorageService.deleteContext(contextId).catch(console.error)
       },
 
-      // Settings
-      setApiKey: (apiKey) => {
-        nexusAnthropicClient.setApiKey(apiKey)
-      },
-
-      getApiKey: () => {
-        return nexusAnthropicClient.getApiKey()
-      },
-
       // Initialize from IndexedDB
       initialize: async () => {
         try {
